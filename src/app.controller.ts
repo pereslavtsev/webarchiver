@@ -8,7 +8,7 @@ import {
   SubscribeIpcMessage,
 } from 'nest-ipc';
 import { Socket } from 'net';
-import * as process from "process";
+import * as process from 'process';
 
 @Controller()
 export class AppController {
@@ -18,7 +18,7 @@ export class AppController {
 
   @SubscribeIpcMessage('message')
   handleWorldMessage(@Payload() data: string) {
-    console.log(11111, data, process.pid)
+    console.log(11111, data, process.pid);
     this.logger.verbose('message', data);
     return 'heff';
   }

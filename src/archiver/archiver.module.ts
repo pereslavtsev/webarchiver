@@ -1,10 +1,15 @@
 import { Logger, Module } from '@nestjs/common';
 import { AppController } from '../app.controller';
-import {IpcModule, IpcService, NestIpcServer, OnIpcInit} from 'nest-ipc';
+import { IpcModule, IpcService, NestIpcServer, OnIpcInit } from 'nest-ipc';
+import { CoreModule } from '../core/core.module';
+import { ArchiverService } from './archiver.service';
+import { ConfigModule } from '@nestjs/config';
+import botConfig from '../core/config/bot.config';
 
 @Module({
-  imports: [IpcModule.register({ id: 'webarchiver' })],
+  imports: [ConfigModule.forFeature(botConfig), CoreModule],
   controllers: [AppController],
+  providers: [ArchiverService],
 })
 export class ArchiverModule implements OnIpcInit {
   private readonly logger = new Logger();
@@ -16,12 +21,10 @@ export class ArchiverModule implements OnIpcInit {
     setTimeout(() => {
       server.broadcast('message', '3232323');
     }, 3000);
-
   }
 
   onModuleInit(): any {
-
-    console.log('boor222')
+    console.log('boor222');
     setTimeout(async () => {
       // while (true) {
       //   this.ipcService.emit('message', 'hello222');

@@ -1,7 +1,7 @@
 import { CommandFactory } from 'nest-commander';
 import { AppModule } from './app.module';
 import { fork } from 'child_process';
-import * as process from 'process';
+import process from 'process';
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions } from '@nestjs/microservices';
 import { IpcServer } from 'nest-ipc';

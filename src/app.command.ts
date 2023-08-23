@@ -1,13 +1,13 @@
 import { Command, CommandRunner, Option } from 'nest-commander';
-import * as boxen from 'boxen';
-import * as process from 'process';
-import * as cliui from 'cliui';
-import * as Table from 'cli-table3';
+import boxen from 'boxen';
+import process from 'process';
+import cliui from 'cliui';
+import Table from 'cli-table3';
 
 import * as readline from 'readline';
-import * as os from 'os';
+import os from 'os';
 const eol = os.EOL;
-import * as chalk from 'chalk';
+import chalk from 'chalk';
 import { terminal } from 'terminal-kit';
 import { SingleLineMenuOptions } from 'terminal-kit/Terminal';
 import { IpcService, SubscribeIpcMessage } from 'nest-ipc';
