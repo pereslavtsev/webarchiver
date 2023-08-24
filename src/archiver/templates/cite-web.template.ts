@@ -1,8 +1,8 @@
-import { ActiveTemplate } from '../classes/active-template.class';
 import { parseDate } from '../utils';
+import { BaseCitationTemplate } from './base-citation-template';
 import { ActiveParameter } from '../classes/active-parameter.class';
 
-export class CiteWebTemplate extends ActiveTemplate {
+export class CiteWebTemplate extends BaseCitationTemplate {
   protected get accessDateParam() {
     return this.getParam('access-date');
   }
@@ -10,7 +10,7 @@ export class CiteWebTemplate extends ActiveTemplate {
     return this.getParam('archive-url');
   }
 
-  get accessDate(): Date {
+  get accessDate(): Date | null {
     const getAccessDateParam = this.accessDateParam;
     if (!getAccessDateParam) {
       return null;
@@ -34,7 +34,7 @@ export class CiteWebTemplate extends ActiveTemplate {
     this.setParam(this.archiveUrlParam?.name ?? 'archive-url', value);
   }
 
-  get archiveDate(): Date {
+  get archiveDate(): Date | null {
     const getArchiveDateParam = this.getParam('archive-date');
     if (!getArchiveDateParam) {
       return null;

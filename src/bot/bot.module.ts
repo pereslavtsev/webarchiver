@@ -1,8 +1,13 @@
-import { Inject, Module, OnApplicationBootstrap } from '@nestjs/common';
+import {
+  BeforeApplicationShutdown,
+  Module,
+  OnModuleInit,
+} from '@nestjs/common';
 import { BotConfigService } from './services/bot-config.service';
 import { mwn } from 'mwn';
 import { ConfigModule } from '@nestjs/config';
 import botConfig from './config/bot.config';
+import { InjectBot } from './decorators/inject-bot.decorator';
 
 @Module({
   imports: [ConfigModule.forFeature(botConfig)],
@@ -15,20 +20,24 @@ import botConfig from './config/bot.config';
       provide: 'MWN_INSTANCE',
       inject: [BotConfigService],
       useFactory: async (botConfigService: BotConfigService) => {
-        const options = await botConfigService.create();
+        const options = await botConfigService.createMwnOptions();
         return new mwn(options);
       },
     },
   ],
   exports: ['MWN_INSTANCE'],
 })
-export class BotModule implements OnApplicationBootstrap {
+export class BotModule implements OnModuleInit, BeforeApplicationShutdown {
   constructor(
-    @Inject('MWN_INSTANCE')
+    @InjectBot()
     private readonly bot: mwn,
   ) {}
 
-  async onApplicationBootstrap(): Promise<any> {
+  async onModuleInit(): Promise<any> {
     await this.bot.login();
+  }
+
+  async beforeApplicationShutdown(): Promise<void> {
+    await this.bot.logout();
   }
 }

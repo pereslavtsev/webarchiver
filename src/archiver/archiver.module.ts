@@ -1,13 +1,12 @@
 import { Logger, Module } from '@nestjs/common';
 import { AppController } from '../app.controller';
-import { IpcModule, IpcService, NestIpcServer, OnIpcInit } from 'nest-ipc';
+import { IpcService, NestIpcServer, OnIpcInit } from 'nest-ipc';
 import { CoreModule } from '../core/core.module';
 import { ArchiverService } from './archiver.service';
-import { ConfigModule } from '@nestjs/config';
-import botConfig from '../bot/config/bot.config';
+import { SourcesModule } from '../sources/sources.module';
 
 @Module({
-  imports: [ConfigModule.forFeature(botConfig), CoreModule],
+  imports: [CoreModule, SourcesModule],
   controllers: [AppController],
   providers: [ArchiverService],
 })

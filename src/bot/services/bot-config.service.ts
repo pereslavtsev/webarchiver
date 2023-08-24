@@ -10,7 +10,7 @@ export class BotConfigService {
     private readonly config: ConfigType<typeof botConfig>,
   ) {}
 
-  async create(): Promise<MwnOptions> {
+  async createMwnOptions(): Promise<MwnOptions> {
     const { username, password } = this.config;
     return {
       apiUrl: 'https://ru.wikipedia.org/w/api.php',

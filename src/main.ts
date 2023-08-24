@@ -16,6 +16,7 @@ async function bootstrap() {
     app.connectMicroservice<MicroserviceOptions>({
       strategy: app.get(IpcServer),
     });
+    app.enableShutdownHooks();
     await app.startAllMicroservices();
     await app.listen(5000);
   } else {

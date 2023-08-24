@@ -16,7 +16,7 @@ import { BotModule } from './bot/bot.module';
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 @Module({
-  imports: [CoreModule, SourcesModule, BotModule],
+  imports: [CoreModule],
   controllers: [UiController],
   providers: [AppCommand],
 })
