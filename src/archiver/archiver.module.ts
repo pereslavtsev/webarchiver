@@ -4,7 +4,7 @@ import { IpcModule, IpcService, NestIpcServer, OnIpcInit } from 'nest-ipc';
 import { CoreModule } from '../core/core.module';
 import { ArchiverService } from './archiver.service';
 import { ConfigModule } from '@nestjs/config';
-import botConfig from '../core/config/bot.config';
+import botConfig from '../bot/config/bot.config';
 
 @Module({
   imports: [ConfigModule.forFeature(botConfig), CoreModule],

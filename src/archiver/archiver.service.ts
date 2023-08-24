@@ -1,8 +1,9 @@
 import { Inject, Injectable, OnApplicationBootstrap } from '@nestjs/common';
 import { mwn } from 'mwn';
-import botConfig from '../core/config/bot.config';
+import botConfig from '../bot/config/bot.config';
 import { ConfigType } from '@nestjs/config';
 import PQueue from 'p-queue';
+import { CiteWebTemplate } from './templates/cite-web.template';
 
 @Injectable()
 export class ArchiverService implements OnApplicationBootstrap {
@@ -15,7 +16,10 @@ export class ArchiverService implements OnApplicationBootstrap {
     this.queue.on('idle', () => console.log('idle'));
   }
 
+  archive() {}
+
   async onApplicationBootstrap(): Promise<any> {
+    return ;
     const { username, password } = this.config;
     const bot = new mwn({
       apiUrl: 'https://ru.wikipedia.org/w/api.php',
@@ -28,7 +32,8 @@ export class ArchiverService implements OnApplicationBootstrap {
     const templates = wkt.parseTemplates({
       templatePredicate: (template) => {
         const { name } = template;
-        const archiveUrl = template.getParam('archive-url') ?? template.getParam('archiveurl');
+        const archiveUrl =
+          template.getParam('archive-url') ?? template.getParam('archiveurl');
         if (['cite web'].includes(String(name).toLowerCase()) && !archiveUrl) {
           return true;
         } else {
@@ -36,9 +41,11 @@ export class ArchiverService implements OnApplicationBootstrap {
         }
       },
     });
-    console.log('templates', templates[0]);
-    templates[0].addParam('archive-url', 'test', 'test')
-    console.log('templates', templates[0]);
+    const citeWeb = new CiteWebTemplate(templates[0]);
+    citeWeb.accessDate = 'dsd';
+    citeWeb.archiveUrl = 'http://test.test';
+    // citeWeb.addParam('archive-url', 'test', 'test');
+    console.log('templates', JSON.parse(JSON.stringify(citeWeb)));
     this.queue.start();
   }
 }

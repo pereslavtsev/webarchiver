@@ -10,11 +10,13 @@ import ipc from 'node-ipc';
 import { ClientsModule, MessagePattern } from '@nestjs/microservices';
 import { UiController } from './ui.controller';
 import { CoreModule } from './core/core.module';
+import { SourcesModule } from './sources/sources.module';
+import { BotModule } from './bot/bot.module';
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 @Module({
-  imports: [CoreModule],
+  imports: [CoreModule, SourcesModule, BotModule],
   controllers: [UiController],
   providers: [AppCommand],
 })
