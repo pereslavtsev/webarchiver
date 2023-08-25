@@ -12,6 +12,8 @@ import { UiController } from './ui.controller';
 import { CoreModule } from './core/core.module';
 import { SourcesModule } from './sources/sources.module';
 import { BotModule } from './bot/bot.module';
+import { MementoModule } from './memento/memento.module';
+import { WatchersModule } from './watchers/watchers.module';
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 

@@ -8,14 +8,13 @@ import { mwn } from 'mwn';
 import { ConfigModule } from '@nestjs/config';
 import botConfig from './config/bot.config';
 import { InjectBot } from './decorators/inject-bot.decorator';
+import { BotService } from './services/bot.service';
 
 @Module({
   imports: [ConfigModule.forFeature(botConfig)],
   providers: [
-    {
-      provide: BotConfigService,
-      useClass: BotConfigService,
-    },
+    BotService,
+    BotConfigService,
     {
       provide: 'MWN_INSTANCE',
       inject: [BotConfigService],
@@ -25,7 +24,7 @@ import { InjectBot } from './decorators/inject-bot.decorator';
       },
     },
   ],
-  exports: ['MWN_INSTANCE'],
+  exports: ['MWN_INSTANCE', BotService],
 })
 export class BotModule implements OnModuleInit, BeforeApplicationShutdown {
   constructor(

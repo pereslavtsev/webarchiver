@@ -4,9 +4,11 @@ import { IpcService, NestIpcServer, OnIpcInit } from 'nest-ipc';
 import { CoreModule } from '../core/core.module';
 import { ArchiverService } from './archiver.service';
 import { SourcesModule } from '../sources/sources.module';
+import { MementoModule } from '../memento/memento.module';
+import { WatchersModule } from '../watchers/watchers.module';
 
 @Module({
-  imports: [CoreModule, SourcesModule],
+  imports: [CoreModule, SourcesModule, MementoModule, WatchersModule],
   controllers: [AppController],
   providers: [ArchiverService],
 })
