@@ -11,9 +11,9 @@ export class BotConfigService {
   ) {}
 
   async createMwnOptions(): Promise<MwnOptions> {
-    const { username, password } = this.config;
+    const { apiUrl, username, password } = this.config;
     return {
-      apiUrl: 'https://ru.wikipedia.org/w/api.php',
+      apiUrl,
       username,
       password,
     };

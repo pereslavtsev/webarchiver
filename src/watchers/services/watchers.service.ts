@@ -5,11 +5,13 @@ import {
 } from '@nestjs/common';
 import { isMainThread, Worker } from 'worker_threads';
 import { Watcher } from '../entities/watcher.entity';
-import { WATCHERS } from '../mocks/watchers.mock';
+// import { WATCHERS } from '../mocks/watchers.mock';
 import { WatcherContext } from '../interfaces/watcher-context.interface';
 import { ApiResponse } from 'mwn';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { JSONPath } from 'jsonpath-plus';
 
 @Injectable()
 export class WatchersService
@@ -17,6 +19,7 @@ export class WatchersService
   implements OnApplicationBootstrap, BeforeApplicationShutdown
 {
   constructor(
+    private readonly eventEmitter: EventEmitter2,
     @InjectRepository(Watcher)
     repository: Repository<Watcher>,
   ) {
@@ -33,10 +36,6 @@ export class WatchersService
     [...this.workerThreadMap.keys()].forEach((watcherId) =>
       this.stop(watcherId),
     );
-  }
-
-  findById(id: Watcher['id']) {
-    return WATCHERS.find((watcher) => watcher.id === id);
   }
 
   run(watcher: Watcher): never | void {
@@ -86,6 +85,13 @@ export class WatchersService
     return worker.terminate();
   }
 
+  async reset(id: Watcher['id']): Promise<void> {
+    await this.update(
+      { id },
+      { continue: null, startedAt: null, interruptedAt: null, exitCode: 0 },
+    );
+  }
+
   protected async handleWatcherOnline(context: WatcherContext): Promise<void> {
     const { data: watcher, worker } = context;
     const { id } = watcher;
@@ -97,18 +103,21 @@ export class WatchersService
   }
 
   protected async handleWatcherResponse(
-    response: ApiResponse,
+    json: ApiResponse,
     context: WatcherContext,
   ): Promise<void> {
     const { data: watcher } = context;
     const { id } = watcher;
 
-    console.log(
-      'on message',
-      context.worker.threadId,
-      JSON.stringify(response),
-    );
-    await this.update({ id }, { continue: response.continue });
+    const apiPages = JSONPath({
+      path: '$.query.pages[*].transcludedin[*]',
+      json,
+    });
+
+    await Promise.all([
+      this.eventEmitter.emitAsync('watcher.pages', apiPages),
+      this.update({ id }, { continue: json.continue }),
+    ]);
   }
 
   protected async handleWatcherError(

@@ -8,6 +8,7 @@ import databaseConfig from './config/database.config';
 import { ModuleMetadata } from '@nestjs/common';
 import process from 'process';
 import { isMainThread } from 'worker_threads';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 const metadata: ModuleMetadata = {
   imports: [ConfigModule.forRoot()],
@@ -22,6 +23,7 @@ if (isMainThread) {
 
   if (process.send === undefined) {
     metadata.imports.push(
+      EventEmitterModule.forRoot(),
       TypeOrmModule.forRootAsync({
         imports: [ConfigModule.forFeature(databaseConfig)],
         useClass: TypeOrmConfigService,

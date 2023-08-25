@@ -6,9 +6,16 @@ import { ArchiverService } from './archiver.service';
 import { SourcesModule } from '../sources/sources.module';
 import { MementoModule } from '../memento/memento.module';
 import { WatchersModule } from '../watchers/watchers.module';
+import { PagesModule } from '../pages/pages.module';
 
 @Module({
-  imports: [CoreModule, SourcesModule, MementoModule, WatchersModule],
+  imports: [
+    CoreModule,
+    SourcesModule,
+    MementoModule,
+    WatchersModule,
+    PagesModule,
+  ],
   controllers: [AppController],
   providers: [ArchiverService],
 })

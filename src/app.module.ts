@@ -14,6 +14,7 @@ import { SourcesModule } from './sources/sources.module';
 import { BotModule } from './bot/bot.module';
 import { MementoModule } from './memento/memento.module';
 import { WatchersModule } from './watchers/watchers.module';
+import { PagesModule } from './pages/pages.module';
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 

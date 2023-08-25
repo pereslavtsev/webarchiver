@@ -37,9 +37,9 @@ export class WatchersModule implements OnApplicationBootstrap {
       const watchers = await this.watchersService.find();
       console.log('watchers', watchers);
       watchers.forEach((watcher) => this.watchersService.run(watcher));
-      setTimeout(() => {
-        this.watchersService.stop(2);
-      }, 5000);
+      // setTimeout(() => {
+      //   this.watchersService.stop(2);
+      // }, 5000);
       return;
     }
 
