@@ -3,38 +3,30 @@ import {
   Injectable,
   OnApplicationBootstrap,
 } from '@nestjs/common';
-import { isMainThread, parentPort, Worker, workerData } from 'worker_threads';
+import { isMainThread, Worker } from 'worker_threads';
 import { Watcher } from '../entities/watcher.entity';
 import { WATCHERS } from '../mocks/watchers.mock';
 import { WatcherContext } from '../interfaces/watcher-context.interface';
-import { BotService } from '../../bot/services/bot.service';
 import { ApiResponse } from 'mwn';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class WatchersService
+  extends Repository<Watcher>
   implements OnApplicationBootstrap, BeforeApplicationShutdown
 {
-  constructor(private readonly botService: BotService) {}
+  constructor(
+    @InjectRepository(Watcher)
+    repository: Repository<Watcher>,
+  ) {
+    super(repository.target, repository.manager, repository.queryRunner);
+  }
 
   protected readonly workerThreadMap = new Map<Watcher['id'], Worker>();
 
   async onApplicationBootstrap(): Promise<void> {
-    if (isMainThread) {
-      const watcher1 = await this.findById(1);
-      const watcher2 = await this.findById(2);
-      this.run(watcher1);
-      this.run(watcher2);
-      setTimeout(() => {
-        this.stop(watcher1.id);
-      }, 3000);
-      return;
-    }
-
-    const { params }: Watcher = workerData['data'];
-
-    for await (const json of this.botService.continuedQueryGen(params)) {
-      parentPort.postMessage(json);
-    }
+    // await this.save(WATCHERS);
   }
 
   beforeApplicationShutdown(): void {
@@ -85,33 +77,57 @@ export class WatchersService
 
     const worker = this.workerThreadMap.get(id);
 
-    return worker.removeAllListeners().terminate();
+    // console.log('worker', worker);
+
+    if (!worker) {
+      throw new Error(`Worker for watcher ${id} not found`);
+    }
+
+    return worker.terminate();
   }
 
-  protected handleWatcherOnline(context: WatcherContext): void {
+  protected async handleWatcherOnline(context: WatcherContext): Promise<void> {
     const { data: watcher, worker } = context;
     const { id } = watcher;
 
+    console.log(`watcher ${id} has been started`);
+
     this.workerThreadMap.set(id, worker);
+    await this.update({ id }, { startedAt: new Date() });
   }
 
-  protected handleWatcherResponse(
+  protected async handleWatcherResponse(
     response: ApiResponse,
     context: WatcherContext,
-  ): void {
+  ): Promise<void> {
+    const { data: watcher } = context;
+    const { id } = watcher;
+
     console.log(
       'on message',
       context.worker.threadId,
       JSON.stringify(response),
     );
+    await this.update({ id }, { continue: response.continue });
   }
 
-  protected handleWatcherError(error: Error, context: WatcherContext): void {}
+  protected async handleWatcherError(
+    error: Error,
+    context: WatcherContext,
+  ): Promise<void> {
+    console.error(error);
+  }
 
-  protected handleWatcherExit(code: number, context: WatcherContext): void {
+  protected async handleWatcherExit(
+    exitCode: number,
+    context: WatcherContext,
+  ): Promise<void> {
     const { data: watcher } = context;
     const { id } = watcher;
 
+    console.log(`watcher ${id} has been interrupted with code ${exitCode}`);
+
     this.workerThreadMap.delete(id);
+    await this.update({ id }, { interruptedAt: new Date(), exitCode });
   }
 }

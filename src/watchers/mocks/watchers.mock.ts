@@ -1,6 +1,6 @@
 import { Watcher } from '../entities/watcher.entity';
 
-export const WATCHERS: Watcher[] = [
+export const WATCHERS: Partial<Watcher>[] = [
   {
     id: 1,
     name: 'cite-web_watcher',

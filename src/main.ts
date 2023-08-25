@@ -15,7 +15,7 @@ async function bootstrap() {
     if (isMainThread) {
       const childProcess = fork(__filename); // Создаем форкнутый процесс за пределами блока if
       process.once('exit', () => childProcess.kill());
-      const app = await NestFactory.create(ArchiverModule, {});
+      const app = await NestFactory.create(ArchiverModule);
       app.connectMicroservice<MicroserviceOptions>({
         strategy: app.get(IpcServer),
       });
@@ -29,7 +29,7 @@ async function bootstrap() {
   } else {
     const app = await NestFactory.create(AppModule);
     await app.listen(5001);
-    // await CommandFactory.run(AppModule, ['warn', 'error', 'log', 'verbose']);
+    // await CommandFactory.run(AppModule, ['warn', 'error']);
   }
 }
 
