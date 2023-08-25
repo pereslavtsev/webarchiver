@@ -18,7 +18,7 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
       type: 'postgres',
       url,
       namingStrategy: new SnakeNamingStrategy(),
-      logging: true,
+      // logging: true,
       autoLoadEntities: true,
       synchronize: true,
     };

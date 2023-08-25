@@ -1,5 +1,11 @@
 import { ActiveTemplate } from '../../archiver/classes/active-template.class';
+import { Column, Entity } from 'typeorm';
+import { BaseEntity } from '../../core/entities/base.entity';
 
-export class Source {
-  template: ActiveTemplate['wikitext'];
+@Entity('sources')
+export class Source extends BaseEntity {
+  @Column('varchar')
+  url: string;
+  @Column('varchar')
+  templateBefore: ActiveTemplate['wikitext'];
 }

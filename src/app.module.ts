@@ -30,7 +30,7 @@ export class AppModule implements OnApplicationBootstrap {
 
   async onApplicationBootstrap(): Promise<void> {
     await this.ipcService.connect();
-    ipc.of[this.ipcService['id']].on('message', (x) => { console.log('data', x) });
+    // ipc.of[this.ipcService['id']].on('message', (x) => { console.log('data', x) });
   }
 
   async onModuleInit(): Promise<any> {
@@ -43,7 +43,7 @@ export class AppModule implements OnApplicationBootstrap {
       // }
       this.ipcService
         .send('message', 'hello222')
-        .subscribe((response) => console.log('u', response));
+        .subscribe((response) => console.log('urere', response));
     }, 500);
   }
 }

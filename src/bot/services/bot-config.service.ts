@@ -16,6 +16,7 @@ export class BotConfigService {
       apiUrl,
       username,
       password,
+      silent: true,
     };
   }
 }

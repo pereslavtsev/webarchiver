@@ -20,6 +20,9 @@ import {
   OnApplicationBootstrap,
   OnModuleInit,
 } from '@nestjs/common';
+import { firstValueFrom } from 'rxjs';
+import ipc from 'node-ipc';
+import type { Watcher } from './watchers/entities/watcher.entity';
 
 const items = ['File', 'Edit', 'View', 'History', 'Bookmarks', 'Tools', 'Help'];
 
@@ -79,7 +82,10 @@ export class AppCommand extends CommandRunner {
     // options?: BasicCommandOptions,
   ): Promise<void> {
     console.log('run');
-    // terminal.clear();
+    terminal.clear();
+    const watchers: Watcher[] = await firstValueFrom(
+      this.ipcService.send('get_watchers', { foo: 'bar' }),
+    );
 
     // terminal.singleLineMenu(items, options, (error, response) => {
     //   // console.log(response)
@@ -92,9 +98,36 @@ export class AppCommand extends CommandRunner {
     //   );
     //   process.exit();
     // });
+    terminal.windowTitle('WebArchiver');
+    terminal.table(
+      [
+        ['ID    ', 'Name', 'Started At', 'Interrupted At', 'Status'].map(
+          (header) => header.toUpperCase(),
+        ),
+        ...watchers.map((watcher) => [
+          `^y${watcher.id}^`,
+          watcher.name,
+          `^y${watcher.startedAt}^`,
+          `^y${watcher.interruptedAt}^`,
+          '✅ Active',
+        ]),
+      ],
+      {
+        hasBorder: false,
+        contentHasMarkup: true,
+        textAttr: { bgColor: 'default' },
+        borderChars: 'empty',
+        // firstCellTextAttr: { bgColor: 'blue' },
+        // firstRowTextAttr: { bgColor: 'yellow' },
+        // firstColumnTextAttr: { bgColor: 'red' },
+        // checkerEvenCellTextAttr: { bgColor: 'gray' },
+        // width: 60,
+        fit: true, // Activate all expand/shrink + wordWrap
+      },
+    );
     // terminal.table(
     //   [
-    //     ['header #1', 'header #2', 'header #3'],
+    //     ['Name', 'ID'],
     //     [
     //       'row #1',
     //       'a much bigger cell, a much bigger cell, a much bigger cell... ',

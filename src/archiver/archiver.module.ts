@@ -26,13 +26,13 @@ export class ArchiverModule implements OnIpcInit {
 
   onIpcInit(server: NestIpcServer): any {
     // console.log('IPC server started');
-    setTimeout(() => {
-      server.broadcast('message', '3232323');
-    }, 3000);
+    // setTimeout(() => {
+    //   server.broadcast('message', '3232323');
+    // }, 3000);
   }
 
   onModuleInit(): any {
-    console.log('boor222');
+    // console.log('boor222');
     setTimeout(async () => {
       // while (true) {
       //   this.ipcService.emit('message', 'hello222');

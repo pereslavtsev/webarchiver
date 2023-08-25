@@ -1,4 +1,4 @@
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, Generated } from 'typeorm';
 import { BaseEntity } from '../../core/entities/base.entity';
 
 @Entity('pages')
@@ -11,4 +11,7 @@ export class Page extends BaseEntity {
   title: string;
   @Column('boolean')
   redirect: boolean;
+  @Column('bigint')
+  @Generated('increment')
+  priority: number;
 }

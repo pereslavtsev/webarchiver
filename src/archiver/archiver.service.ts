@@ -7,7 +7,7 @@ export class ArchiverService implements OnApplicationBootstrap {
   protected readonly queue = new PQueue({ concurrency: 1, autoStart: false });
 
   constructor(private readonly sourcesService: SourcesService) {
-    this.queue.on('idle', () => console.log('idle'));
+    // this.queue.on('idle', () => console.log('idle'));
   }
 
   archive() {}
