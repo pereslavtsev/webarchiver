@@ -15,11 +15,14 @@ import { BotModule } from './bot/bot.module';
 import { MementoModule } from './memento/memento.module';
 import { WatchersModule } from './watchers/watchers.module';
 import { PagesModule } from './pages/pages.module';
+import { TerminalModule } from './terminal/terminal.module';
+import { InjectTerminal } from './terminal/decorators/inject-bot.decorator';
+import { CrawlerModule } from './crawler/crawler.module';
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 @Module({
-  imports: [CoreModule],
+  imports: [CoreModule, TerminalModule],
   controllers: [UiController],
   providers: [AppCommand],
 })

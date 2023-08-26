@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { IpcModule } from 'nest-ipc';
 import { IpcConfigService } from './services/ipc-config.service';
 import { ConfigModule } from '@nestjs/config';

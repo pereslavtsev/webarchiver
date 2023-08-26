@@ -4,11 +4,11 @@ import {
   OnModuleInit,
 } from '@nestjs/common';
 import { BotConfigService } from './services/bot-config.service';
-import { mwn } from 'mwn';
 import { ConfigModule } from '@nestjs/config';
 import botConfig from './config/bot.config';
 import { InjectBot } from './decorators/inject-bot.decorator';
 import { BotService } from './services/bot.service';
+import { Bot } from './classes/bot.class';
 
 @Module({
   imports: [ConfigModule.forFeature(botConfig)],
@@ -20,7 +20,7 @@ import { BotService } from './services/bot.service';
       inject: [BotConfigService],
       useFactory: async (botConfigService: BotConfigService) => {
         const options = await botConfigService.createMwnOptions();
-        return new mwn(options);
+        return new Bot(options);
       },
     },
   ],
@@ -29,7 +29,7 @@ import { BotService } from './services/bot.service';
 export class BotModule implements OnModuleInit, BeforeApplicationShutdown {
   constructor(
     @InjectBot()
-    private readonly bot: mwn,
+    private readonly bot: Bot,
   ) {}
 
   async onModuleInit(): Promise<any> {

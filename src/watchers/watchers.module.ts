@@ -51,9 +51,12 @@ export class WatchersModule implements OnApplicationBootstrap {
       // }, 5000);
       return;
     } else if (!isMainThread) {
-      const { params }: Watcher = workerData['data'];
+      const { params, continue: continueParams }: Watcher = workerData['data'];
 
-      for await (const json of this.botService.continuedQueryGen(params)) {
+      for await (const json of this.botService.continuedQueryGen(
+        { ...params, ...continueParams },
+        1,
+      )) {
         parentPort.postMessage(json);
       }
     }

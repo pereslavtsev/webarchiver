@@ -8,7 +8,7 @@ import * as readline from 'readline';
 import os from 'os';
 const eol = os.EOL;
 import chalk from 'chalk';
-import { terminal } from 'terminal-kit';
+import { Terminal, terminal } from 'terminal-kit';
 import { SingleLineMenuOptions } from 'terminal-kit/Terminal';
 import { IpcService, SubscribeIpcMessage } from 'nest-ipc';
 import { Payload } from '@nestjs/microservices';
@@ -23,6 +23,7 @@ import {
 import { firstValueFrom } from 'rxjs';
 import ipc from 'node-ipc';
 import type { Watcher } from './watchers/entities/watcher.entity';
+import { InjectTerminal } from './terminal/decorators/inject-bot.decorator';
 
 const items = ['File', 'Edit', 'View', 'History', 'Bookmarks', 'Tools', 'Help'];
 
@@ -73,7 +74,11 @@ interface BasicCommandOptions {
 
 @Command({ name: 'ui', description: 'UI', options: { isDefault: true } })
 export class AppCommand extends CommandRunner {
-  constructor(private readonly ipcService: IpcService) {
+  constructor(
+    private readonly ipcService: IpcService,
+    @InjectTerminal()
+    private readonly terminal: Terminal,
+  ) {
     super();
   }
 
@@ -82,7 +87,7 @@ export class AppCommand extends CommandRunner {
     // options?: BasicCommandOptions,
   ): Promise<void> {
     console.log('run');
-    terminal.clear();
+    this.terminal.clear();
     const watchers: Watcher[] = await firstValueFrom(
       this.ipcService.send('get_watchers', { foo: 'bar' }),
     );
@@ -98,8 +103,8 @@ export class AppCommand extends CommandRunner {
     //   );
     //   process.exit();
     // });
-    terminal.windowTitle('WebArchiver');
-    terminal.table(
+    this.terminal.windowTitle('WebArchiver');
+    this.terminal.table(
       [
         ['ID    ', 'Name', 'Started At', 'Interrupted At', 'Status'].map(
           (header) => header.toUpperCase(),
@@ -109,7 +114,7 @@ export class AppCommand extends CommandRunner {
           watcher.name,
           `^y${watcher.startedAt}^`,
           `^y${watcher.interruptedAt}^`,
-          '✅ Active',
+          '^g√^ Active',
         ]),
       ],
       {

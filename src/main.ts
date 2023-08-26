@@ -27,9 +27,9 @@ async function bootstrap() {
       await NestFactory.createApplicationContext(WatchersModule);
     }
   } else {
-    // const app = await NestFactory.create(AppModule);
-    // await app.listen(5001);
-    await CommandFactory.run(AppModule, ['warn', 'error']);
+    const app = await NestFactory.create(AppModule);
+    await app.listen(5001);
+    // await CommandFactory.run(AppModule, ['warn', 'error']);
   }
 }
 

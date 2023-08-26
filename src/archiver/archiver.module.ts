@@ -7,6 +7,7 @@ import { SourcesModule } from '../sources/sources.module';
 import { MementoModule } from '../memento/memento.module';
 import { WatchersModule } from '../watchers/watchers.module';
 import { PagesModule } from '../pages/pages.module';
+import { CrawlerModule } from '../crawler/crawler.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { PagesModule } from '../pages/pages.module';
     MementoModule,
     WatchersModule,
     PagesModule,
+    CrawlerModule,
   ],
   controllers: [AppController],
   providers: [ArchiverService],
