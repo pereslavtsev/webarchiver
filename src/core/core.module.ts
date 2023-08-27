@@ -9,11 +9,18 @@ import { ModuleMetadata } from '@nestjs/common';
 import process from 'process';
 import { isMainThread } from 'worker_threads';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import {BullModule} from "@nestjs/bull";
 
 const metadata: ModuleMetadata = {
   imports: [ConfigModule.forRoot()],
   exports: [],
 };
+
+if (process.send === undefined) {
+  metadata.imports.push(BullModule.forRootAsync({
+    useClass
+  }))
+}
 
 if (isMainThread) {
   metadata.imports.push(
