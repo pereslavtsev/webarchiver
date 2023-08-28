@@ -8,6 +8,7 @@ import { IpcServer } from 'nest-ipc';
 import { ArchiverModule } from './archiver/archiver.module';
 import { isMainThread, parentPort, workerData, threadId } from 'worker_threads';
 import { WatchersModule } from './watchers/watchers.module';
+import { CrawlerModule } from './crawler/crawler.module';
 
 async function bootstrap() {
   if (process.send === undefined) {
@@ -24,7 +25,17 @@ async function bootstrap() {
       await app.listen(5000);
     } else {
       console.log('started thread', { workerData, threadId });
-      await NestFactory.createApplicationContext(WatchersModule);
+      const { type } = workerData;
+      switch (type) {
+        case 'watcher': {
+          await NestFactory.createApplicationContext(WatchersModule);
+          break;
+        }
+        case 'crawler': {
+          await NestFactory.createApplicationContext(CrawlerModule);
+          break;
+        }
+      }
     }
   } else {
     const app = await NestFactory.create(AppModule);

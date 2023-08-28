@@ -1,9 +1,10 @@
-import { Column, Entity, Generated } from 'typeorm';
+import { Column, Entity, Generated, OneToMany } from 'typeorm';
 import { BaseEntity } from '../../core/entities/base.entity';
+import { Source } from '../../sources/entities/source.entity';
 
 @Entity('pages')
 export class Page extends BaseEntity {
-  @Column('bigint', { unique: true })
+  @Column('int4', { unique: true })
   pageId: number;
   @Column('int2')
   namespace: number;
@@ -11,7 +12,9 @@ export class Page extends BaseEntity {
   title: string;
   @Column('boolean')
   redirect: boolean;
-  @Column('bigint')
+  @Column('int4')
   @Generated('increment')
   priority: number;
+  @OneToMany(() => Source, (source) => source.page, { cascade: true })
+  readonly sources: Source[];
 }

@@ -9,8 +9,8 @@ import { ModuleMetadata } from '@nestjs/common';
 import process from 'process';
 import { isMainThread } from 'worker_threads';
 import { EventEmitterModule } from '@nestjs/event-emitter';
-import {BullModule} from "@nestjs/bull";
-import {BullConfigService} from "./services/bull-config.service";
+import { BullModule } from '@nestjs/bull';
+import { BullConfigService } from './services/bull-config.service';
 
 const metadata: ModuleMetadata = {
   imports: [ConfigModule.forRoot()],
@@ -18,9 +18,11 @@ const metadata: ModuleMetadata = {
 };
 
 if (process.send === undefined) {
-  metadata.imports.push(BullModule.forRootAsync({
-    useClass: BullConfigService
-  }))
+  metadata.imports.push(
+    BullModule.forRootAsync({
+      useClass: BullConfigService,
+    }),
+  );
 }
 
 if (isMainThread) {
