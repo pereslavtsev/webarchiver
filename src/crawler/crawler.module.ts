@@ -4,8 +4,9 @@ import { PagesModule } from '../pages/pages.module';
 import { BotModule } from '../bot/bot.module';
 import { CoreModule } from '../core/core.module';
 import { BullModule } from '@nestjs/bull';
-import { CrawlerConsumer } from './consumers/crawler.consumer';
+import { CrawlerBackgroundConsumer } from './consumers/crawler-background.consumer';
 import { isMainThread } from 'worker_threads';
+import { CrawlerMainConsumer } from './consumers/crawler-main.consumer';
 
 const metadata: ModuleMetadata = {
   imports: [
@@ -19,10 +20,10 @@ const metadata: ModuleMetadata = {
 };
 
 if (!isMainThread) {
-  metadata.providers.push(CrawlerConsumer);
+  metadata.providers.push(CrawlerBackgroundConsumer);
 } else {
   metadata.imports.push(PagesModule);
-  metadata.providers.push(CrawlerService);
+  metadata.providers.push(CrawlerMainConsumer, CrawlerService);
 }
 
 @Module(metadata)

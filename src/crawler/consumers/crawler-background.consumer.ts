@@ -3,8 +3,8 @@ import {
   Process,
   OnQueueCompleted,
   OnQueueFailed,
-  OnQueueProgress,
-} from '@nestjs/bull';
+  OnQueueProgress, OnQueueDrained
+} from "@nestjs/bull";
 import { Job } from 'bull';
 import { Page } from '../../pages/entities/page.entity';
 import { InjectBot } from '../../bot/decorators/inject-bot.decorator';
@@ -21,26 +21,18 @@ function escapeRegExp(string: string) {
 }
 
 @Processor('crawler')
-export class CrawlerConsumer {
+export class CrawlerBackgroundConsumer {
   constructor(
     @InjectBot()
     private readonly bot: Bot,
   ) {}
 
-  @OnQueueCompleted()
-  onCompleted(_: Job, result: any) {
-    parentPort.postMessage(result);
+  @OnQueueDrained()
+  handle() {
+    console.log(3333222);
   }
 
-  @OnQueueFailed()
-  onFailed(_: Job, error: Error) {
-    console.log('error', error);
-  }
 
-  @OnQueueProgress()
-  onProgress(job: Job<Page>, progress: number) {
-    console.log('progress', job.data.title, progress);
-  }
 
   @Process()
   protected async process(job: Job<Page>) {
@@ -56,7 +48,6 @@ export class CrawlerConsumer {
     const activeTemplates = templates.map((template) => {
       switch (String(template.name).toLowerCase()) {
         case 'cite web': {
-          console.log('template', template);
           return new CiteWebTemplate(template);
         }
         default: {
@@ -146,7 +137,7 @@ export class CrawlerConsumer {
       return source;
     });
 
-    return { page, response: apiPage, sources };
+    return { response: apiPage, sources };
   }
 
   protected async parseTemplates(wkt: MwnWikitext) {

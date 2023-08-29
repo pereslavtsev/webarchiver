@@ -8,8 +8,6 @@ import { ApiPage } from 'mwn';
 import { Source } from '../../sources/entities/source.entity';
 import { Bot } from '../../bot/classes/bot.class';
 import { InjectBot } from '../../bot/decorators/inject-bot.decorator';
-import { BotService } from '../../bot/services/bot.service';
-import { SourcesService } from '../../sources/sources.service';
 import { IsNull } from 'typeorm';
 
 @Injectable()
@@ -35,7 +33,6 @@ export class CrawlerService implements OnApplicationBootstrap {
       },
       order: { priority: 'asc', createdAt: 'desc' },
     });
-    console.log(pages);
     const jobs = pages.map((page) => ({
       data: page,
       opts: {
@@ -49,7 +46,6 @@ export class CrawlerService implements OnApplicationBootstrap {
     if (isMainThread) {
       // await this.pagesService.delete({});
       await this.clearAll();
-
       await this.sync();
 
       const worker = new Worker(require.main.filename, {
@@ -68,23 +64,7 @@ export class CrawlerService implements OnApplicationBootstrap {
     }
   }
 
-  protected async handleResponse(message: {
-    page: Page;
-    response: ApiPage;
-    sources: Source[];
-  }) {
-    // console.log('message', message);
-    const { page, sources, response } = message;
-    const { id, title, pageId } = page;
-    console.log(
-      `page "${title}" (${pageId}) has been scanned, unarchived sources: ${sources.length}`,
-    );
-    await this.pagesService.save({
-      id,
-      sources,
-      scannedAt: new Date(),
-    });
-  }
+  protected async handleResponse(message: any) {}
 
   protected handleOnline() {}
 
