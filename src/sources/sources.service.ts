@@ -1,15 +1,22 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { CiteWebTemplate } from '../archiver/templates/cite-web.template';
 import { InjectBot } from '../bot/decorators/inject-bot.decorator';
-import { mwn } from 'mwn';
 import { ActiveTemplate } from '../archiver/classes/active-template.class';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Bot } from '../bot/classes/bot.class';
+import { Source } from './entities/source.entity';
 
 @Injectable()
-export class SourcesService implements OnModuleInit {
+export class SourcesService extends Repository<Source> implements OnModuleInit {
   constructor(
     @InjectBot()
-    private readonly bot: mwn,
-  ) {}
+    private readonly bot: Bot,
+    @InjectRepository(Source)
+    repository: Repository<Source>,
+  ) {
+    super(repository.target, repository.manager, repository.queryRunner);
+  }
 
   protected templateNamespace: string;
 

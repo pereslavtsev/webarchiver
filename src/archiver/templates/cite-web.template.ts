@@ -24,7 +24,7 @@ export class CiteWebTemplate extends BaseCitationTemplate {
 
   get archiveUrl(): URL | null {
     const getArchiveUrlParam = this.getParam('archive-url');
-    if (!getArchiveUrlParam) {
+    if (!getArchiveUrlParam?.value.length) {
       return null;
     }
     return new URL(getArchiveUrlParam.value);

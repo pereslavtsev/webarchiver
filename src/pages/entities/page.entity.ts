@@ -15,6 +15,8 @@ export class Page extends BaseEntity {
   @Column('int4')
   @Generated('increment')
   priority: number;
+  @Column('timestamptz', { nullable: true })
+  scannedAt: Date;
   @OneToMany(() => Source, (source) => source.page, { cascade: true })
   readonly sources: Source[];
 }

@@ -1,5 +1,5 @@
 import { ActiveTemplate } from '../../archiver/classes/active-template.class';
-import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, Index, ManyToOne, JoinColumn } from 'typeorm';
 import { BaseEntity } from '../../core/entities/base.entity';
 import { Page } from '../../pages/entities/page.entity';
 
@@ -10,7 +10,7 @@ export class Source extends BaseEntity {
   url: string;
   @Column('int4')
   revisionId: number;
-  @Column('date')
+  @Column('timestamptz')
   preferredAt: Date;
   @Column('date', { nullable: true })
   accessDate: Date;
@@ -22,7 +22,9 @@ export class Source extends BaseEntity {
   wikitextBefore: ActiveTemplate['wikitext'];
   @Column('int4')
   pageId: Page['id'];
-  @ManyToOne(() => Page, (page) => page.sources, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'page_id' })
+  @ManyToOne(() => Page, (page) => page.sources, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'page_id', referencedColumnName: 'id' })
   page: Page;
 }

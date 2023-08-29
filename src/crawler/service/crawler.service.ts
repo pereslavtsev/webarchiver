@@ -3,12 +3,14 @@ import { PagesService } from '../../pages/services/pages.service';
 import { InjectQueue } from '@nestjs/bull';
 import { Page } from '../../pages/entities/page.entity';
 import { Queue } from 'bull';
-import { isMainThread, parentPort, Worker } from 'worker_threads';
+import { isMainThread, Worker } from 'worker_threads';
 import { ApiPage } from 'mwn';
 import { Source } from '../../sources/entities/source.entity';
 import { Bot } from '../../bot/classes/bot.class';
 import { InjectBot } from '../../bot/decorators/inject-bot.decorator';
 import { BotService } from '../../bot/services/bot.service';
+import { SourcesService } from '../../sources/sources.service';
+import { IsNull } from 'typeorm';
 
 @Injectable()
 export class CrawlerService implements OnApplicationBootstrap {
@@ -28,8 +30,12 @@ export class CrawlerService implements OnApplicationBootstrap {
   async sync() {
     const pages = await this.pagesService.find({
       take: 10,
+      where: {
+        scannedAt: IsNull(),
+      },
       order: { priority: 'asc', createdAt: 'desc' },
     });
+    console.log(pages);
     const jobs = pages.map((page) => ({
       data: page,
       opts: {
@@ -43,8 +49,6 @@ export class CrawlerService implements OnApplicationBootstrap {
     if (isMainThread) {
       // await this.pagesService.delete({});
       await this.clearAll();
-
-
 
       await this.sync();
 
@@ -71,14 +75,24 @@ export class CrawlerService implements OnApplicationBootstrap {
   }) {
     // console.log('message', message);
     const { page, sources, response } = message;
-    const { id } = page;
-    // console.log(response.revisions[0]);
-    await this.pagesService.save({ id, sources });
+    const { id, title, pageId } = page;
+    console.log(
+      `page "${title}" (${pageId}) has been scanned, unarchived sources: ${sources.length}`,
+    );
+    await this.pagesService.save({
+      id,
+      sources,
+      scannedAt: new Date(),
+    });
   }
 
   protected handleOnline() {}
 
-  protected handleError(error) {}
+  protected handleError(error) {
+    console.log('error', error);
+  }
 
-  protected handleExit(code) {}
+  protected handleExit(code) {
+    console.log('code', code);
+  }
 }
