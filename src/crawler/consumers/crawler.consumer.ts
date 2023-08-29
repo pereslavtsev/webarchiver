@@ -3,7 +3,7 @@ import { Job } from 'bull';
 import { Page } from '../../pages/entities/page.entity';
 import { InjectBot } from '../../bot/decorators/inject-bot.decorator';
 import { Bot } from '../../bot/classes/bot.class';
-import { MwnWikitext } from 'mwn';
+import { ApiRevision, MwnWikitext } from 'mwn';
 import { CiteWebTemplate } from '../../archiver/templates/cite-web.template';
 import { ActiveTemplate } from '../../archiver/classes/active-template.class';
 import { BaseCitationTemplate } from '../../archiver/templates/base-citation-template';
@@ -27,7 +27,10 @@ export class CrawlerConsumer {
     const { data: page } = job;
     const { pageId } = page;
 
-    const apiPage = await this.bot.read(pageId);
+    console.log('reading page', page);
+    const apiPage = await this.bot.read(pageId, {
+      rvprop: ['ids', 'timestamp', 'content'],
+    });
     const wkt = new this.bot.wikitext(apiPage.revisions[0].content);
     const templates = await this.parseTemplates(wkt);
     const activeTemplates = templates.map((template) => {
@@ -55,6 +58,49 @@ export class CrawlerConsumer {
         };
       },
     );
+
+    if (!sources.length) {
+      return { page, response: apiPage, sources: [] };
+    }
+
+    const sourcesMap = new Map();
+
+    const tailRevisionId = apiPage.revisions[0].revid;
+    const regexp = new RegExp(
+      sources.map((source) => source.url).join('|'),
+      'gi',
+    );
+
+    // console.log('regexp', regexp);
+
+    for await (const json of this.bot.continuedQueryGen({
+      action: 'query',
+      prop: 'revisions',
+      pageids: pageId,
+      rvdir: 'newer',
+      rvendid: tailRevisionId,
+      rvslots: 'main',
+      rvlimit: 'max',
+      rvprop: ['ids', 'content', 'comment', 'timestamp'],
+    })) {
+      for (const revision of json.query.pages[0].revisions as ApiRevision[]) {
+        const matched = [
+          ...String(revision.slots.main.content).matchAll(regexp),
+        ];
+        console.log('matched', matched);
+        if (!matched) {
+          continue;
+        }
+        [...matched].map((match) => sourcesMap.set(match[0], revision.timestamp));
+        if (sourcesMap.size >= sources.length) {
+          break;
+        }
+      }
+    }
+
+    console.log(333333, sourcesMap);
+    console.log(4444, sources.length);
+
     return { page, response: apiPage, sources };
   }
 

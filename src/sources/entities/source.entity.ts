@@ -8,7 +8,11 @@ export class Source extends BaseEntity {
   @Index()
   @Column('varchar')
   url: string;
+  @Column('int4')
+  revisionId: number;
   @Column('date')
+  preferredAt: Date;
+  @Column('date', { nullable: true })
   accessDate: Date;
   @Column('varchar', { nullable: true })
   archiveUrl: string = null;
