@@ -7,6 +7,7 @@ import { BullModule } from '@nestjs/bull';
 import { CrawlerBackgroundConsumer } from './consumers/crawler-background.consumer';
 import { isMainThread } from 'worker_threads';
 import { CrawlerMainConsumer } from './consumers/crawler-main.consumer';
+import { SourcesModule } from '../sources/sources.module';
 
 const metadata: ModuleMetadata = {
   imports: [
@@ -14,6 +15,9 @@ const metadata: ModuleMetadata = {
     CoreModule,
     BullModule.registerQueue({
       name: 'crawler',
+      settings: {
+        maxStalledCount: 10 * 60 * 1000,
+      },
     }),
   ],
   providers: [],
@@ -22,7 +26,7 @@ const metadata: ModuleMetadata = {
 if (!isMainThread) {
   metadata.providers.push(CrawlerBackgroundConsumer);
 } else {
-  metadata.imports.push(PagesModule);
+  metadata.imports.push(PagesModule, SourcesModule);
   metadata.providers.push(CrawlerMainConsumer, CrawlerService);
 }
 

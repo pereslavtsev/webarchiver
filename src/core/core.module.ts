@@ -1,4 +1,4 @@
-import { Logger, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { IpcModule } from 'nest-ipc';
 import { IpcConfigService } from './services/ipc-config.service';
 import { ConfigModule } from '@nestjs/config';
@@ -11,6 +11,8 @@ import { isMainThread } from 'worker_threads';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { BullModule } from '@nestjs/bull';
 import { BullConfigService } from './services/bull-config.service';
+import { PrometheusModule } from '@willsoto/nestjs-prometheus';
+import { PrometheusConfigService } from './services/prometheus-config.service';
 
 const metadata: ModuleMetadata = {
   imports: [ConfigModule.forRoot()],
@@ -33,6 +35,9 @@ if (isMainThread) {
 
   if (process.send === undefined) {
     metadata.imports.push(
+      PrometheusModule.registerAsync({
+        useClass: PrometheusConfigService,
+      }),
       EventEmitterModule.forRoot(),
       TypeOrmModule.forRootAsync({
         imports: [ConfigModule.forFeature(databaseConfig)],

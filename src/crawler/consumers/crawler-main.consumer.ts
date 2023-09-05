@@ -3,35 +3,54 @@ import {
   OnGlobalQueueCompleted,
   OnGlobalQueueFailed,
   OnGlobalQueueProgress,
+  OnGlobalQueueDrained,
   Processor,
 } from '@nestjs/bull';
 import { Job, JobId, Queue } from 'bull';
 import { Page } from '../../pages/entities/page.entity';
-import { ApiPage } from 'mwn';
 import { Source } from '../../sources/entities/source.entity';
-import { PagesService } from '../../pages/services/pages.service';
+import { DataSource } from 'typeorm';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { CrawlerService } from '../service/crawler.service';
 
 @Processor('crawler')
 export class CrawlerMainConsumer {
   constructor(
-    private readonly pagesService: PagesService,
+    private readonly eventEmitter: EventEmitter2,
+    private readonly dataSource: DataSource,
     @InjectQueue('crawler') private crawlerQueue: Queue<Page>,
+    private readonly crawlerService: CrawlerService,
   ) {}
 
   @OnGlobalQueueCompleted()
   async handleJobCompleted(jobId: JobId, result: string) {
     const { data: page } = await this.crawlerQueue.getJob(jobId);
     const { id, title, pageId } = page;
-    const { sources } = JSON.parse(result);
-    console.log('sources', page, sources);
+    const { sources } = JSON.parse(result) as { sources: Partial<Source>[] };
     console.log(
       `page "${title}" (${pageId}) has been scanned, unarchived sources: ${sources.length}`,
     );
-    await this.pagesService.save({
-      id,
-      sources,
-      scannedAt: new Date(),
-    });
+    const queryRunner = this.dataSource.createQueryRunner();
+
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      await queryRunner.manager
+        .getRepository(Page)
+        .update({ id }, { scannedAt: new Date() });
+      await queryRunner.manager.getRepository(Source).upsert(
+        sources.map((source) => ({ ...source, pageId: id })),
+        ['url', 'pageId'],
+      );
+      await queryRunner.commitTransaction();
+    } catch (err) {
+      console.log(err);
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+      await this.eventEmitter.emitAsync(Page.Event.SCANNED, { page });
+    }
   }
 
   @OnGlobalQueueFailed()
@@ -41,6 +60,12 @@ export class CrawlerMainConsumer {
 
   @OnGlobalQueueProgress()
   handleJobProgress(job: Job<Page>, progress: number) {
-    console.log('progress', job.data.title, progress);
+    console.log('progress', job, progress);
+  }
+
+  @OnGlobalQueueDrained()
+  async handleQueueDrained(): Promise<void> {
+    console.log('OnGlobalQueueDrained');
+    await this.crawlerService.synchroniseJobs();
   }
 }

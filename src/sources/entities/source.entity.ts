@@ -1,9 +1,18 @@
 import { ActiveTemplate } from '../../archiver/classes/active-template.class';
-import { Column, Entity, Index, ManyToOne, JoinColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  ManyToOne,
+  JoinColumn,
+  Unique,
+  Relation,
+} from 'typeorm';
 import { BaseEntity } from '../../core/entities/base.entity';
 import { Page } from '../../pages/entities/page.entity';
 
 @Entity('sources')
+@Unique(['url', 'pageId'])
 export class Source extends BaseEntity {
   @Index()
   @Column('varchar')
@@ -25,6 +34,6 @@ export class Source extends BaseEntity {
   @ManyToOne(() => Page, (page) => page.sources, {
     onDelete: 'CASCADE',
   })
-  @JoinColumn({ name: 'page_id', referencedColumnName: 'id' })
-  page: Page;
+  @JoinColumn({ name: 'page_id' })
+  page: Relation<Page>;
 }

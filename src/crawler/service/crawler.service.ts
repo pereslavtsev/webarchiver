@@ -2,20 +2,14 @@ import { Injectable, OnApplicationBootstrap } from '@nestjs/common';
 import { PagesService } from '../../pages/services/pages.service';
 import { InjectQueue } from '@nestjs/bull';
 import { Page } from '../../pages/entities/page.entity';
-import { Queue } from 'bull';
+import type { Job, Queue } from 'bull';
 import { isMainThread, Worker } from 'worker_threads';
-import { ApiPage } from 'mwn';
-import { Source } from '../../sources/entities/source.entity';
-import { Bot } from '../../bot/classes/bot.class';
-import { InjectBot } from '../../bot/decorators/inject-bot.decorator';
 import { IsNull } from 'typeorm';
 
 @Injectable()
 export class CrawlerService implements OnApplicationBootstrap {
   constructor(
     private readonly pagesService: PagesService,
-    @InjectBot()
-    private readonly bot: Bot,
     @InjectQueue('crawler') private crawlerQueue: Queue<Page>,
   ) {}
 
@@ -25,7 +19,7 @@ export class CrawlerService implements OnApplicationBootstrap {
     }
   }
 
-  async sync() {
+  async synchroniseJobs(): Promise<Job<Page>[]> {
     const pages = await this.pagesService.find({
       take: 10,
       where: {
@@ -39,14 +33,14 @@ export class CrawlerService implements OnApplicationBootstrap {
         jobId: page.pageId,
       },
     }));
-    await this.crawlerQueue.addBulk(jobs);
+    return this.crawlerQueue.addBulk(jobs);
   }
 
   async onApplicationBootstrap(): Promise<void> {
     if (isMainThread) {
       // await this.pagesService.delete({});
-      await this.clearAll();
-      await this.sync();
+      // await this.clearAll();
+      await this.synchroniseJobs();
 
       const worker = new Worker(require.main.filename, {
         name: 'crawler',

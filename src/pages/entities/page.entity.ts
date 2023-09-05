@@ -1,9 +1,12 @@
-import { Column, Entity, Generated, OneToMany } from 'typeorm';
+import { Column, Entity, Generated, OneToMany, Relation } from "typeorm";
 import { BaseEntity } from '../../core/entities/base.entity';
 import { Source } from '../../sources/entities/source.entity';
+import { PageEvent } from '../enums/page-event.enum';
 
 @Entity('pages')
 export class Page extends BaseEntity {
+  static readonly Event = PageEvent;
+
   @Column('int4', { unique: true })
   pageId: number;
   @Column('int2')
@@ -17,6 +20,6 @@ export class Page extends BaseEntity {
   priority: number;
   @Column('timestamptz', { nullable: true })
   scannedAt: Date;
-  @OneToMany(() => Source, (source) => source.page, { cascade: true })
-  readonly sources: Source[];
+  @OneToMany(() => Source, (source) => source.page, { cascade: ['insert'] })
+  readonly sources: Relation<Source>[];
 }

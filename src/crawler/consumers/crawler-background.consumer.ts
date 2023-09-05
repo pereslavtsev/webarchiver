@@ -1,10 +1,4 @@
-import {
-  Processor,
-  Process,
-  OnQueueCompleted,
-  OnQueueFailed,
-  OnQueueProgress, OnQueueDrained
-} from "@nestjs/bull";
+import { Processor, Process } from '@nestjs/bull';
 import { Job } from 'bull';
 import { Page } from '../../pages/entities/page.entity';
 import { InjectBot } from '../../bot/decorators/inject-bot.decorator';
@@ -14,11 +8,7 @@ import { CiteWebTemplate } from '../../archiver/templates/cite-web.template';
 import { ActiveTemplate } from '../../archiver/classes/active-template.class';
 import { BaseCitationTemplate } from '../../archiver/templates/base-citation-template';
 import type { Source } from '../../sources/entities/source.entity';
-import { parentPort } from 'worker_threads';
-
-function escapeRegExp(string: string) {
-  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
-}
+import { escapeRegExp } from '../../utils';
 
 @Processor('crawler')
 export class CrawlerBackgroundConsumer {
@@ -26,13 +16,6 @@ export class CrawlerBackgroundConsumer {
     @InjectBot()
     private readonly bot: Bot,
   ) {}
-
-  @OnQueueDrained()
-  handle() {
-    console.log(3333222);
-  }
-
-
 
   @Process()
   protected async process(job: Job<Page>) {
