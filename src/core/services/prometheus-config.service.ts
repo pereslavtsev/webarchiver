@@ -7,6 +7,10 @@ import {
 @Injectable()
 export class PrometheusConfigService implements PrometheusOptionsFactory {
   createPrometheusOptions(): PrometheusOptions {
-    return {};
+    return {
+      pushgateway: {
+        url: 'http://127.0.0.1:9091',
+      },
+    };
   }
 }
