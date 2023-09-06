@@ -16,6 +16,10 @@ import { makeCounterProvider } from '@willsoto/nestjs-prometheus';
       name: 'pages_added_total',
       help: 'Total pages added',
     }),
+    makeCounterProvider({
+      name: 'pages_received_total',
+      help: 'Total pages received',
+    }),
   ],
   exports: [PagesService],
 })

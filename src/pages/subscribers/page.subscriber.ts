@@ -12,7 +12,8 @@ import { Counter } from 'prom-client';
 export class PageSubscriber implements EntitySubscriberInterface<Page> {
   constructor(
     dataSource: DataSource,
-    @InjectMetric('pages_added_total') public counter: Counter<string>,
+    @InjectMetric('pages_added_total')
+    public readonly pagesAddedTotal: Counter<string>,
   ) {
     dataSource.subscribers.push(this);
   }
@@ -22,12 +23,11 @@ export class PageSubscriber implements EntitySubscriberInterface<Page> {
   }
 
   async afterInsert(event: InsertEvent<Page>) {
-    console.log(
-      `AFTER PAGE INSERTED: `,
-      event.entity.pageId,
-      event.entity.title,
-    );
-    this.counter.inc();
-    console.log(await this.counter.get())
+    // console.log(
+    //   `AFTER PAGE INSERTED: `,
+    //   event.entity.pageId,
+    //   event.entity.title,
+    // );
+    this.pagesAddedTotal.inc();
   }
 }
