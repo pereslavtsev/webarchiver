@@ -21,12 +21,13 @@ export class PageSubscriber implements EntitySubscriberInterface<Page> {
     return Page;
   }
 
-  afterInsert(event: InsertEvent<Page>) {
+  async afterInsert(event: InsertEvent<Page>) {
     console.log(
       `AFTER PAGE INSERTED: `,
       event.entity.pageId,
       event.entity.title,
     );
     this.counter.inc();
+    console.log(await this.counter.get())
   }
 }

@@ -5,12 +5,17 @@ services:
     image: prom/prometheus:v2.37.9
     container_name: prometheus
     volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
       - '$PWD/data/prometheus:/prometheus'
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
     restart: unless-stopped
     expose:
       - 9090
     ports:
       - "9090:9090"
+    network_mode: host
   pushgateway:
     image: prom/pushgateway:v1.6.0
     container_name: pushgateway
@@ -19,17 +24,17 @@ services:
       - 9091
     ports:
       - "9091:9091"
-  grafana:
-    image: grafana/grafana:10.0.5
-    container_name: grafana
-    restart: unless-stopped
-    ports:
-      - '3333:3000'
-    volumes:
-      - '$PWD/data/grafana:/var/lib/grafana'
-    healthcheck:
-      test: [ "CMD", "grafana-cli", "plugins", "ls" ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 20s
+#  grafana:
+#    image: grafana/grafana:10.0.5
+#    container_name: grafana
+#    restart: unless-stopped
+#    ports:
+#      - '3333:3000'
+#    volumes:
+#      - '$PWD/data/grafana:/var/lib/grafana'
+#    healthcheck:
+#      test: [ "CMD", "grafana-cli", "plugins", "ls" ]
+#      interval: 30s
+#      timeout: 10s
+#      retries: 3
+#      start_period: 20s
