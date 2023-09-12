@@ -1,21 +1,18 @@
 name: CI
 
-on:
-  push:
-    branches: [ dev ]
-  pull_request:
-    branches: [ dev ]
+on: [ push, pull_request ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
+          cache: 'yarn'
       - uses: borales/actions-yarn@v4
         with:
           cmd: install --frozen-lockfile
-      - run: lerna bootstrap
       - run: lerna run build
