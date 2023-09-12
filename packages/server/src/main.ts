@@ -2,17 +2,14 @@ import { AppModule } from './app.module';
 import { fork } from 'child_process';
 import process from 'process';
 import { NestFactory } from '@nestjs/core';
-import {
-  GrpcOptions,
-  MicroserviceOptions,
-  Transport,
-} from '@nestjs/microservices';
+import { GrpcOptions, MicroserviceOptions } from '@nestjs/microservices';
 import { IpcServer } from 'nest-ipc';
 import { ArchiverModule } from './archiver/archiver.module';
 import { isMainThread, threadId, workerData } from 'worker_threads';
 import { WatchersModule } from './watchers/watchers.module';
 import { CrawlerModule } from './crawler/crawler.module';
-import * as path from 'path';
+import { GrpcConfigService } from './core/services/grpc-config.service';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   if (process.send === undefined) {
@@ -24,13 +21,13 @@ async function bootstrap() {
       app.connectMicroservice<MicroserviceOptions>({
         strategy: app.get(IpcServer),
       });
-      app.connectMicroservice<GrpcOptions>({
-        options: {
-          package: 'webarchiver',
-          protoPath: path.join(__dirname, 'archiver/archiver.proto'),
-        },
-        transport: Transport.GRPC,
-      });
+      const configService = app.get(ConfigService);
+      const grpcConfigService = app.get(GrpcConfigService);
+      const grpcOptions = await grpcConfigService.createGrpcOptions();
+      const grpcEnabled = configService.get('grpc.enabled');
+      if (grpcEnabled) {
+        app.connectMicroservice<GrpcOptions>(grpcOptions);
+      }
       app.enableShutdownHooks();
       await app.startAllMicroservices();
       await app.listen(50051);
