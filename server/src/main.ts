@@ -22,7 +22,7 @@ async function bootstrap() {
       });
       app.enableShutdownHooks();
       await app.startAllMicroservices();
-      await app.listen(5000);
+      await app.listen(50051);
     } else {
       console.log('started thread', { workerData, threadId });
       const { type } = workerData;
