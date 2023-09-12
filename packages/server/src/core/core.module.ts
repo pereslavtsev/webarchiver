@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { IpcModule } from 'nest-ipc';
 import { IpcConfigService } from './services/ipc-config.service';
 import { ConfigModule } from '@nestjs/config';
@@ -15,7 +15,7 @@ import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 import { PrometheusConfigService } from './services/prometheus-config.service';
 
 const metadata: ModuleMetadata = {
-  imports: [ConfigModule.forRoot({ envFilePath: '../.env' })],
+  imports: [ConfigModule.forRoot({ envFilePath: '../../.env' })],
   exports: [],
 };
 
@@ -44,9 +44,10 @@ if (isMainThread) {
         useClass: TypeOrmConfigService,
       }),
     );
-    metadata.exports.push(TypeOrmModule);
+    metadata.exports.push(PrometheusModule, TypeOrmModule);
   }
 }
 
+@Global()
 @Module(metadata)
 export class CoreModule {}

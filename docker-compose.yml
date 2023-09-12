@@ -1,32 +1,69 @@
-version: "3.9"
+version: "3.3"
 
 services:
-  server:
-    build:
-      context: .
-  prometheus:
-    image: prom/prometheus:v2.37.9
-    container_name: prometheus
+#  server:
+#    restart: unless-stopped
+#    build:
+#      target: development
+#      context: .
+#    ports:
+#      - "50051:50051"
+#    depends_on:
+#     - database
+  redis:
+    container_name: redis
+    restart: unless-stopped
+    image: 'redis:7.2.1-alpine3.18'
+    env_file: env/redis.env
+    healthcheck:
+      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
     volumes:
-      - ./etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-      - '$PWD/data/prometheus:/prometheus'
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-      - '--storage.tsdb.path=/prometheus'
-    restart: unless-stopped
-    expose:
-      - 9090
+      - ./data/redis:/data
     ports:
-      - "9090:9090"
-    network_mode: host
-  pushgateway:
-    image: prom/pushgateway:v1.6.0
-    container_name: pushgateway
+      - '6379:6379'
+    networks:
+      - app-network
+  database:
+    container_name: database
     restart: unless-stopped
-    expose:
-      - 9091
+    image: 'postgres:12.16-bullseye'
+    environment:
+      POSTGRES_DB: "webarchiver"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
     ports:
-      - "9091:9091"
+      - "5432:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d webarchiver" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-network
+#    image: prom/prometheus:v2.37.9
+#    container_name: prometheus
+#    volumes:
+#      - ./etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+#      - '$PWD/data/prometheus:/prometheus'
+#    command:
+#      - '--config.file=/etc/prometheus/prometheus.yml'
+#      - '--storage.tsdb.path=/prometheus'
+#    restart: unless-stopped
+#    expose:
+#      - 9090
+#    ports:
+#      - "9090:9090"
+#    network_mode: host
+#  pushgateway:
+#    image: prom/pushgateway:v1.6.0
+#    container_name: pushgateway
+#    restart: unless-stopped
+#    expose:
+#      - 9091
+#    ports:
+#      - "9091:9091"
 #  grafana:
 #    image: grafana/grafana:10.0.5
 #    container_name: grafana
@@ -41,3 +78,10 @@ services:
 #      timeout: 10s
 #      retries: 3
 #      start_period: 20s
+
+volumes:
+  data:
+
+networks:
+  app-network:
+    driver: bridge

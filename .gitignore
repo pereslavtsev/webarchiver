@@ -31,5 +31,6 @@ lerna-debug.log*
 
 *.env*
 !example.env
+!env/redis.env
 
 data
