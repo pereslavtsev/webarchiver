@@ -5,10 +5,6 @@
   "repository": "git@github.com:pereslavtsev/webarchiver.git",
   "author": "Vitaly Pereslavtsev <dev@pereslavtsev.com>",
   "license": "MIT",
-  "workspaces": [
-    "server",
-    "app"
-  ],
   "devDependencies": {
     "@commitlint/cli": "^17.7.1",
     "@commitlint/config-conventional": "^17.7.0",

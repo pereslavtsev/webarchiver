@@ -4,7 +4,6 @@
     "packages/*"
   ],
   "version": "1.0.0",
-  "useWorkspaces": true,
   "command": {
     "version": {
       "allowBranch": "master",
