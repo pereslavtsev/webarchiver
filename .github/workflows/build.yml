@@ -17,4 +17,5 @@ jobs:
       - uses: borales/actions-yarn@v4
         with:
           cmd: install --frozen-lockfile
+      - run: lerna bootstrap
       - run: lerna run build
