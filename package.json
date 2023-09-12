@@ -5,10 +5,16 @@
   "repository": "git@github.com:pereslavtsev/webarchiver.git",
   "author": "Vitaly Pereslavtsev <dev@pereslavtsev.com>",
   "license": "MIT",
-  "workspaces": ["packages/*"],
+  "scripts": {
+    "postinstall": "husky install"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
   "devDependencies": {
     "@commitlint/cli": "^17.7.1",
     "@commitlint/config-conventional": "^17.7.0",
+    "@commitlint/config-lerna-scopes": "^17.7.0",
     "husky": "^8.0.3",
     "lerna": "^7.2.0"
   }
