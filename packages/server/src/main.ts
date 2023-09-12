@@ -10,6 +10,7 @@ import { WatchersModule } from './watchers/watchers.module';
 import { CrawlerModule } from './crawler/crawler.module';
 import { GrpcConfigService } from './core/services/grpc-config.service';
 import { ConfigService } from '@nestjs/config';
+import { LoggerMiddleware } from './core/middlewares/logger.middleware';
 
 async function bootstrap() {
   if (process.send === undefined) {

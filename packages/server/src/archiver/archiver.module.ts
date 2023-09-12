@@ -1,4 +1,4 @@
-import { Logger, Module } from '@nestjs/common';
+import { Logger, MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { AppController } from '../app.controller';
 import { IpcService, NestIpcServer, OnIpcInit } from 'nest-ipc';
 import { CoreModule } from '../core/core.module';
@@ -8,6 +8,7 @@ import { MementoModule } from '../memento/memento.module';
 import { WatchersModule } from '../watchers/watchers.module';
 import { PagesModule } from '../pages/pages.module';
 import { CrawlerModule } from '../crawler/crawler.module';
+import { LoggerMiddleware } from '../core/middlewares/logger.middleware';
 
 @Module({
   imports: [
@@ -21,8 +22,14 @@ import { CrawlerModule } from '../crawler/crawler.module';
   controllers: [AppController],
   providers: [ArchiverService],
 })
-export class ArchiverModule implements OnIpcInit {
+export class ArchiverModule implements OnIpcInit, NestModule {
   private readonly logger = new Logger();
+
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(LoggerMiddleware)
+      .forRoutes({ path: '*', method: RequestMethod.ALL });
+  }
 
   constructor(private readonly ipcService: IpcService) {}
 

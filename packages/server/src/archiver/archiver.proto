@@ -3,7 +3,7 @@ syntax = "proto3";
 package webarchiver;
 
 service ArchiverService {
-  rpc ListPagesRequest(ListPagesRequest) returns (ListPagesResponse) {}
+  rpc ListPages(ListPagesRequest) returns (ListPagesResponse) {}
   rpc GetPage(GetPageRequest) returns (Page) {}
 }
 
