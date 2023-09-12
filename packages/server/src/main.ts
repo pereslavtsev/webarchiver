@@ -1,14 +1,18 @@
-import { CommandFactory } from 'nest-commander';
 import { AppModule } from './app.module';
 import { fork } from 'child_process';
 import process from 'process';
 import { NestFactory } from '@nestjs/core';
-import { MicroserviceOptions } from '@nestjs/microservices';
+import {
+  GrpcOptions,
+  MicroserviceOptions,
+  Transport,
+} from '@nestjs/microservices';
 import { IpcServer } from 'nest-ipc';
 import { ArchiverModule } from './archiver/archiver.module';
-import { isMainThread, parentPort, workerData, threadId } from 'worker_threads';
+import { isMainThread, threadId, workerData } from 'worker_threads';
 import { WatchersModule } from './watchers/watchers.module';
 import { CrawlerModule } from './crawler/crawler.module';
+import * as path from 'path';
 
 async function bootstrap() {
   if (process.send === undefined) {
@@ -19,6 +23,13 @@ async function bootstrap() {
       const app = await NestFactory.create(ArchiverModule);
       app.connectMicroservice<MicroserviceOptions>({
         strategy: app.get(IpcServer),
+      });
+      app.connectMicroservice<GrpcOptions>({
+        options: {
+          package: 'webarchiver',
+          protoPath: path.join(__dirname, 'archiver/archiver.proto'),
+        },
+        transport: Transport.GRPC,
       });
       app.enableShutdownHooks();
       await app.startAllMicroservices();

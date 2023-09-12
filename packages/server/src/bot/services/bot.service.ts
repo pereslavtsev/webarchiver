@@ -2,8 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectBot } from '../decorators/inject-bot.decorator';
 import type { ApiParams as MwnApiParams, ApiResponse } from 'mwn';
 import type { ApiParams } from 'types-mediawiki/api_params';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { log } from 'mwn/build/log';
+import * as logUtils from 'mwn/build/log';
 import { Bot } from '../classes/bot.class';
 import { AxiosRequestConfig } from 'axios';
 
@@ -15,9 +14,7 @@ export class BotService {
     @InjectBot()
     private readonly bot: Bot,
   ) {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    log = this.log.bind(this);
+    Object.defineProperty(logUtils, 'log', { value: this.log.bind(this) });
     this.bot.httpClient.interceptors.request.use(
       this.handleHttpRequest.bind(this),
     );

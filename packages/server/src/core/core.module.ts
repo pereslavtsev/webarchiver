@@ -15,7 +15,7 @@ import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 import { PrometheusConfigService } from './services/prometheus-config.service';
 
 const metadata: ModuleMetadata = {
-  imports: [ConfigModule.forRoot()],
+  imports: [ConfigModule.forRoot({ envFilePath: '../.env' })],
   exports: [],
 };
 
