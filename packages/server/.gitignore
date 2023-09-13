@@ -1,6 +1,7 @@
 # compiled output
 /dist
 /node_modules
+/packages/server/node_modules
 
 # Logs
 logs
@@ -17,3 +18,5 @@ lerna-debug.log*
 # Tests
 /coverage
 /.nyc_output
+
+yarn.lock

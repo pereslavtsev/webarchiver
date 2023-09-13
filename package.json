@@ -6,7 +6,8 @@
   "author": "Vitaly Pereslavtsev <dev@pereslavtsev.com>",
   "license": "MIT",
   "scripts": {
-    "postinstall": "husky install"
+    "postinstall": "husky install && yarn generate-lockfiles",
+    "generate-lockfiles": "lerna exec -- generate-lockfile -p package.json -l ../../yarn.lock -w -d -f"
   },
   "workspaces": [
     "packages/*"
@@ -16,6 +17,7 @@
     "@commitlint/cli": "^17.7.1",
     "@commitlint/config-conventional": "^17.7.0",
     "@commitlint/config-lerna-scopes": "^17.7.0",
+    "generate-lockfile": "^0.0.12",
     "husky": "^8.0.3",
     "lerna": "^7.2.0"
   }
