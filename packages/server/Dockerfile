@@ -13,11 +13,11 @@ WORKDIR /usr/src/app
 COPY --chown=node:node packages/server/package.json ./
 COPY --chown=node:node packages/server/yarn.lock ./
 
-# Install app dependencies using the `yarn install --frozen-lockfile` command instead of `yarn`
-RUN yarn install --frozen-lockfile
+# Install app dependencies using the `yarn install --pure-lockfile --non-interactive` command instead of `yarn`
+RUN yarn install --pure-lockfile --non-interactive
 
 # Bundle app source
-COPY --chown=node:node . .
+COPY --chown=node:node packages/server/. .
 
 # Use the node user from the image (instead of the root user)
 USER node
@@ -39,8 +39,6 @@ COPY --chown=node:node --from=development /usr/src/app/node_modules ./node_modul
 
 COPY --chown=node:node packages/server/. .
 
-RUN ls -a
-
 # Run the build command which creates the production bundle
 RUN yarn build
 
@@ -49,7 +47,7 @@ ENV NODE_ENV production
 
 # Running `npm ci` removes the existing node_modules directory and passing in --prod ensures that only the production dependencies are installed.
 # This ensures that the node_modules directory is as optimized as possible
-RUN yarn install --frozen-lockfile --prod && yarn cache clean
+RUN #yarn install --pure-lockfile --non-interactive --prefer-offline --prod && yarn cache clean
 
 USER node
 

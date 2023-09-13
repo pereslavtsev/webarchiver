@@ -31,6 +31,13 @@ lerna-debug.log*
 
 *.env*
 !example.env
-!env/*.env
+!env/redis.env
 
 data
+
+packages/**/.dockerignore
+packages/**/.gitignore
+packages/**/.npmrc
+packages/**/.yarnrc
+packages/**/Dockerfile
+packages/**/node_modules
