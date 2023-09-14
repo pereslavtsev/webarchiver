@@ -4,7 +4,8 @@ import { GrpcMethod } from '@nestjs/microservices';
 @Controller()
 export class PagesController {
   @GrpcMethod('ArchiverService', 'ListPages')
-  list(data: any, metadata: any, call: any) {
+  listPage(data: any, metadata: any, call: any) {
+    console.log('data', data);
     const items = [
       { id: 1, name: 'John' },
       { id: 2, name: 'Doe' },

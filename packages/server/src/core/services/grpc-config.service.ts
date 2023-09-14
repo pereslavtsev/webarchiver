@@ -17,6 +17,7 @@ export class GrpcConfigService {
       transport: Transport.GRPC,
       options: {
         package: 'webarchiver',
+        // protoPath: [],
         protoPath: path.join(__dirname, '../../archiver/archiver.proto'),
         url: `0.0.0.0:${port}`,
       },

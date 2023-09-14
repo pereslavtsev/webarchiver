@@ -19,6 +19,7 @@
     "@commitlint/config-lerna-scopes": "^17.7.0",
     "generate-lockfile": "^0.0.12",
     "husky": "^8.0.3",
-    "lerna": "^7.2.0"
+    "lerna": "^7.2.0",
+    "ts-proto": "^1.157.0"
   }
 }

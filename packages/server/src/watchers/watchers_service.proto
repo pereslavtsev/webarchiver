@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package webarchiver.watchers.v1;
+
+service WatchersService {
+  rpc ListWatchers(ListWatchersRequest) returns (ListWatchersResponse) {}
+  rpc GetWatcher(GetPageRequest) returns (Watcher) {}
+}
+
+message ListWatchersRequest {
+  // Offset of the query for pagination
+  uint32 offset = 1;
+
+  // Limit per page of the query for pagination
+  uint32 limit = 2;
+}
+
+message ListWatchersResponse {
+  repeated Watcher data = 1;
+}
+
+message GetPageRequest {
+  uint32 id = 1;
+}
+
+message Watcher {
+  uint32 id = 1;
+  uint32 created_at = 2;
+  uint32 updated_at = 3;
+  uint32 deleted_at = 4;
+}

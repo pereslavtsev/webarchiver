@@ -5306,6 +5306,11 @@ caniuse-lite@^1.0.0, caniuse-lite@^1.0.30001517, caniuse-lite@^1.0.30001520:
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001533.tgz#1180daeb2518b93c82f19b904d1fefcf82197707"
   integrity sha512-9aY/b05NKU4Yl2sbcJhn4A7MsGwR1EPfW/nrqsnqVA0Oq50wpmPaGI+R1Z0UKlUl96oxUkGEOILWtOHck0eCWw==
 
+case-anything@^2.1.13:
+  version "2.1.13"
+  resolved "https://registry.yarnpkg.com/case-anything/-/case-anything-2.1.13.tgz#0cdc16278cb29a7fcdeb072400da3f342ba329e9"
+  integrity sha512-zlOQ80VrQ2Ue+ymH5OuM/DlDq64mEm+B9UTdHULv5osUMD6HalNTblf2b1u/m6QecjsnOkBpqVZ+XPwIVsy7Ng==
+
 case-sensitive-paths-webpack-plugin@^2.4.0:
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/case-sensitive-paths-webpack-plugin/-/case-sensitive-paths-webpack-plugin-2.4.0.tgz#db64066c6422eed2e08cc14b986ca43796dbc6d4"
@@ -6455,6 +6460,11 @@ detect-indent@^6.0.0:
   resolved "https://registry.yarnpkg.com/detect-indent/-/detect-indent-6.1.0.tgz#592485ebbbf6b3b1ab2be175c8393d04ca0d57e6"
   integrity sha512-reYkTUJAZb9gUuZ2RvVCNhVHdg62RHnJ7WJl8ftMi4diZ6NWlciOzQN88pUhSELEwflJht4oQDv0F0BMlwaYtA==
 
+detect-libc@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/detect-libc/-/detect-libc-1.0.3.tgz#fa137c4bd698edf55cd5cd02ac559f91a4c4ba9b"
+  integrity sha512-pGjwhsmsp4kL2RTz08wcOlGN83otlqHeD/Z5T8GXZB+/YcpQ/dgo+lbU8ZsGxV0HIvqqxo9l7mqYwyYMD9bKDg==
+
 detect-newline@^3.0.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/detect-newline/-/detect-newline-3.1.0.tgz#576f5dfc63ae1a192ff192d8ad3af6308991b651"
@@ -6650,6 +6660,13 @@ dotenv@^10.0.0:
   version "10.0.0"
   resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-10.0.0.tgz#3d4227b8fb95f81096cdd2b66653fb2c7085ba81"
   integrity sha512-rlBi9d8jpv9Sf1klPjNfFAuWDjKLwTIJJ/VxtoTwIR6hnZxcEOQCZg2oIL3MWBYw5GpUDKOEnND7LXTbIpQ03Q==
+
+dprint-node@^1.0.7:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/dprint-node/-/dprint-node-1.0.7.tgz#f571eaf61affb3a696cff1bdde78a021875ba540"
+  integrity sha512-NTZOW9A7ipb0n7z7nC3wftvsbceircwVHSgzobJsEQa+7RnOMbhrfX5IflA6CtC4GA63DSAiHYXa4JKEy9F7cA==
+  dependencies:
+    detect-libc "^1.0.3"
 
 duplexer@^0.1.1, duplexer@^0.1.2:
   version "0.1.2"
@@ -10632,7 +10649,7 @@ log-symbols@^4.1.0:
     chalk "^4.1.0"
     is-unicode-supported "^0.1.0"
 
-long@^5.0.0:
+long@^5.0.0, long@^5.2.3:
   version "5.2.3"
   resolved "https://registry.yarnpkg.com/long/-/long-5.2.3.tgz#a3ba97f3877cf1d778eccbcb048525ebb77499e1"
   integrity sha512-lcHwpNoggQTObv5apGNCTdJrO69eHOZMi4BNC+rTLER8iHAqGrUVeLh/irVIM7zTw2bOXA8T6uNPeujwOLg/2Q==
@@ -15052,6 +15069,31 @@ ts-node@^10.8.1, ts-node@^10.9.1:
     make-error "^1.1.1"
     v8-compile-cache-lib "^3.0.1"
     yn "3.1.1"
+
+ts-poet@^6.5.0:
+  version "6.6.0"
+  resolved "https://registry.yarnpkg.com/ts-poet/-/ts-poet-6.6.0.tgz#cea8a278bcccf7092f4856c46b556a833a119a96"
+  integrity sha512-4vEH/wkhcjRPFOdBwIh9ItO6jOoumVLRF4aABDX5JSNEubSqwOulihxQPqai+OkuygJm3WYMInxXQX4QwVNMuw==
+  dependencies:
+    dprint-node "^1.0.7"
+
+ts-proto-descriptors@1.15.0:
+  version "1.15.0"
+  resolved "https://registry.yarnpkg.com/ts-proto-descriptors/-/ts-proto-descriptors-1.15.0.tgz#e859e3a2887da2d954c552524719b80bdb6ee355"
+  integrity sha512-TYyJ7+H+7Jsqawdv+mfsEpZPTIj9siDHS6EMCzG/z3b/PZiphsX+mWtqFfFVe5/N0Th6V3elK9lQqjnrgTOfrg==
+  dependencies:
+    long "^5.2.3"
+    protobufjs "^7.2.4"
+
+ts-proto@^1.157.0:
+  version "1.157.0"
+  resolved "https://registry.yarnpkg.com/ts-proto/-/ts-proto-1.157.0.tgz#8f23f7d0db4c9746271de6b87eb83b4c3e1965aa"
+  integrity sha512-0f9rvHb+1aLG66UpFHh1QbZ5SMvKqV5EudUerHRF+C47g2wd8ZYXiVrK3VmsmLcNxmMrdi4vWgFNCH6qRg1SrA==
+  dependencies:
+    case-anything "^2.1.13"
+    protobufjs "^7.2.4"
+    ts-poet "^6.5.0"
+    ts-proto-descriptors "1.15.0"
 
 tsconfig-paths-webpack-plugin@4.1.0:
   version "4.1.0"
