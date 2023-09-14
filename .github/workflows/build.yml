@@ -26,6 +26,7 @@ jobs:
         with:
           node-version-file: '.nvmrc'
           cache: 'yarn'
+      - run: npm i -g yarn@2
       - uses: borales/actions-yarn@v4
         with:
           cmd: install --frozen-lockfile --ignore-optional --focus
