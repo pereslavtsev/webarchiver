@@ -1,10 +1,12 @@
 syntax = "proto3";
 
-package webarchiver.watchers.v1;
+import "google/protobuf/timestamp.proto";
+
+package webarchiver.v1;
 
 service WatchersService {
   rpc ListWatchers(ListWatchersRequest) returns (ListWatchersResponse) {}
-  rpc GetWatcher(GetPageRequest) returns (Watcher) {}
+  rpc GetWatcher(GetWatcherRequest) returns (Watcher) {}
 }
 
 message ListWatchersRequest {
@@ -19,13 +21,13 @@ message ListWatchersResponse {
   repeated Watcher data = 1;
 }
 
-message GetPageRequest {
+message GetWatcherRequest {
   uint32 id = 1;
 }
 
 message Watcher {
   uint32 id = 1;
-  uint32 created_at = 2;
-  uint32 updated_at = 3;
-  uint32 deleted_at = 4;
+  google.protobuf.Timestamp created_at = 2;
+  google.protobuf.Timestamp updated_at = 3;
+  google.protobuf.Timestamp deleted_at = 4;
 }

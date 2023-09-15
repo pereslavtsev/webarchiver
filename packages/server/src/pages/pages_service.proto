@@ -1,8 +1,10 @@
 syntax = "proto3";
 
-package webarchiver;
+import "google/protobuf/timestamp.proto";
 
-service ArchiverService {
+package webarchiver.v1;
+
+service PagesService {
   rpc ListPages(ListPagesRequest) returns (ListPagesResponse) {}
   rpc GetPage(GetPageRequest) returns (Page) {}
 }
@@ -25,12 +27,12 @@ message GetPageRequest {
 
 message Page {
   uint32 id = 1;
-  uint32 created_at = 2;
-  uint32 updated_at = 3;
-  uint32 deleted_at = 4;
+  google.protobuf.Timestamp created_at = 2;
+  google.protobuf.Timestamp updated_at = 3;
+  google.protobuf.Timestamp deleted_at = 4;
   uint32 pageId = 10;
   string title = 11;
   bool redirect = 12;
   uint32 priority = 13;
-  uint32 scanned_at = 14;
+  google.protobuf.Timestamp scanned_at = 14;
 }

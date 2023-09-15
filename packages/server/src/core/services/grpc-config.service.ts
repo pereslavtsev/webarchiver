@@ -16,10 +16,12 @@ export class GrpcConfigService {
     return {
       transport: Transport.GRPC,
       options: {
-        package: 'webarchiver',
-        // protoPath: [],
-        protoPath: path.join(__dirname, '../../archiver/archiver.proto'),
+        package: 'webarchiver.v1',
+        protoPath: path.join(__dirname, '../../pages/pages_service.proto'),
         url: `0.0.0.0:${port}`,
+        loader: {
+          includeDirs: [path.join(__dirname, '../../')],
+        },
       },
     };
   }
