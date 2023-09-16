@@ -6,9 +6,11 @@
   "author": "Vitaly Pereslavtsev <dev@pereslavtsev.com>",
   "license": "MIT",
   "scripts": {
+    "server": "lerna exec --scope webarchiver -- yarn",
     "postinstall": "husky install && yarn generate-lockfiles",
     "generate-lockfiles": "lerna exec -- generate-lockfile -p package.json -l ../../yarn.lock -w -d -f",
-    "protoc:docker": "rimraf -g **/__generated__ && docker-compose up --build buf --exit-code-from buf"
+    "docker:local": "docker-compose --profile local",
+    "docker:protoc": "rimraf -g **/__generated__ && docker-compose up --build buf --exit-code-from buf"
   },
   "workspaces": [
     "packages/*"
@@ -18,6 +20,7 @@
     "@commitlint/cli": "^17.7.1",
     "@commitlint/config-conventional": "^17.7.0",
     "@commitlint/config-lerna-scopes": "^17.7.0",
+    "cross-env": "^7.0.3",
     "generate-lockfile": "^0.0.12",
     "husky": "^8.0.3",
     "lerna": "^7.2.0",

@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { isMainThread, Worker } from 'worker_threads';
 import { Watcher } from '../entities/watcher.entity';
-// import { WATCHERS } from '../mocks/watchers.mock';
+import { WATCHERS } from '../mocks/watchers.mock';
 import { WatcherContext } from '../interfaces/watcher-context.interface';
 import { ApiResponse } from 'mwn';
 import { Repository } from 'typeorm';
