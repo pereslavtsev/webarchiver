@@ -1,6 +1,17 @@
 version: "3.9"
 
 services:
+  buf:
+    container_name: buf
+    restart: no
+    build:
+      dockerfile: buf.Dockerfile
+      context: .
+    volumes:
+      - ./buf.gen.yaml:/usr/local/share/.config/yarn/global/buf.gen.yaml
+      - ./buf.work.yaml:/usr/local/share/.config/yarn/global/buf.work.yaml
+      - ./buf.yaml:/usr/local/share/.config/yarn/global/buf.yaml
+      - ./packages/server/src:/usr/local/share/.config/yarn/global/packages/server/src
   server:
     container_name: server
     restart: unless-stopped
