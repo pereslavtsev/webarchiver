@@ -1,6 +1,6 @@
 version: v1
 plugins:
-  - name: ts
+  - name: server
     out: packages/server/src/__generated__
     strategy: all
     path: ./node_modules/ts-proto/protoc-gen-ts_proto
@@ -9,3 +9,11 @@ plugins:
       - outputIndex=true
       - nestJs=true
       - useDate=true
+  - name: web
+    out: packages/app/src/__generated__
+    strategy: all
+    path: ./node_modules/ts-proto/protoc-gen-ts_proto
+    opt:
+      - outputClientImpl=grpc-web
+      - useReadonlyTypes=true
+      - esModuleInterop=true
