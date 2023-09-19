@@ -6,6 +6,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    env:
+      NX_NON_NATIVE_HASHER: true
+
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -26,7 +29,7 @@ jobs:
         with:
           node-version-file: '.nvmrc'
           cache: 'yarn'
-      - run: npm i -g yarn@2
+      - run: npm i -g yarn
       - uses: borales/actions-yarn@v4
         with:
           cmd: install --frozen-lockfile --focus
