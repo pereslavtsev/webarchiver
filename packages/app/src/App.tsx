@@ -5,9 +5,9 @@ import {grpc} from "@improbable-eng/grpc-web";
 
 import { GrpcWebImpl, PagesServiceClientImpl, PagesServiceGetPageDesc } from "./__generated__/pages/pages_service";
 
-const rpc = new GrpcWebImpl('http://0.0.0.0:50051', {
+const rpc = new GrpcWebImpl('http://0.0.0.0:8081', {
 });
-grpc.unary(PagesServiceGetPageDesc, {})
+// grpc.unary(PagesServiceGetPageDesc, {})
 const client = new PagesServiceClientImpl(rpc);
 
 client.ListPages({ limit: 10, offset: 0 }).then(value => console.log(value))
