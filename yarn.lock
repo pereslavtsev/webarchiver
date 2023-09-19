@@ -1260,48 +1260,6 @@
     classnames "^2.3.1"
     tslib "~2.5.0"
 
-"@bufbuild/buf-darwin-arm64@1.26.1":
-  version "1.26.1"
-  resolved "https://registry.yarnpkg.com/@bufbuild/buf-darwin-arm64/-/buf-darwin-arm64-1.26.1.tgz#6085067537074440c098abe1f9cf86be637ad6f2"
-  integrity sha512-nmyWiT/59RFja0ZuXFxjNGoAMDPTApU66CZUUevkFVWbNB9nzeQDjx2vsJyACY64k5fTgZiaelSiyppwObQknw==
-
-"@bufbuild/buf-darwin-x64@1.26.1":
-  version "1.26.1"
-  resolved "https://registry.yarnpkg.com/@bufbuild/buf-darwin-x64/-/buf-darwin-x64-1.26.1.tgz#76d0cfd468dd2b2c462b7b5ad0de062e475d755e"
-  integrity sha512-jl5WmUv30OW8JiRLid9+mVx1XVH0XttpUfkQfmqDFdUHGfdy4XWYK8kr84YyWu0SiMTIt1mPXkqG5UM3x+tdIQ==
-
-"@bufbuild/buf-linux-aarch64@1.26.1":
-  version "1.26.1"
-  resolved "https://registry.yarnpkg.com/@bufbuild/buf-linux-aarch64/-/buf-linux-aarch64-1.26.1.tgz#45cc1f69ce64beb6aa1dce0eefd7d04db2ed7790"
-  integrity sha512-EedR2KDW/yDIxQKWuq1Y/g7IuwTgvelqylGVO7muMxt2JWShobyUaU6GIU8JB4yhIbqRQYCL2KqBsvDJbJtCUw==
-
-"@bufbuild/buf-linux-x64@1.26.1":
-  version "1.26.1"
-  resolved "https://registry.yarnpkg.com/@bufbuild/buf-linux-x64/-/buf-linux-x64-1.26.1.tgz#32c1395497d9a877671b74191d2d199d078b1e34"
-  integrity sha512-5iFL+MmWqR4cBLVNpgsjRecdHgcTxFaIkVYlQV9q8acbaJn5rgOIjUr1tzcBao9YsL3rdBhHvKkgnQ9gi1IiTw==
-
-"@bufbuild/buf-win32-arm64@1.26.1":
-  version "1.26.1"
-  resolved "https://registry.yarnpkg.com/@bufbuild/buf-win32-arm64/-/buf-win32-arm64-1.26.1.tgz#839001f409c111ddf5745a1278128b4c49e9c8d0"
-  integrity sha512-/ayymSD12gBetN98ErkH0CBGRLTmtYAp4fmbPuvq8zuJcL0eiAnK6d7ZFjTc+vDMuKY/aelQN7dj9WhzdYAQSQ==
-
-"@bufbuild/buf-win32-x64@1.26.1":
-  version "1.26.1"
-  resolved "https://registry.yarnpkg.com/@bufbuild/buf-win32-x64/-/buf-win32-x64-1.26.1.tgz#483ebcdc31944cef6e78c0a4e01208252baf7ab2"
-  integrity sha512-k9Dy3Z9P96wYR43lUhUo0jbjMSo001+MRBlsadEYiw85POqx6RWVaGyHLrxC2Ly7g+aGMisey050OjqfCWtKTA==
-
-"@bufbuild/buf@^1.26.1":
-  version "1.26.1"
-  resolved "https://registry.yarnpkg.com/@bufbuild/buf/-/buf-1.26.1.tgz#9ff71217d6ece1c38df5c8865feceec01efa809b"
-  integrity sha512-NyYx4T//3ndtFYV3BfqX9Xrm1NZEx3eChXniAKc/osCVViFooC5nuLQUbyqglMonH0w39RohiURMXN+e/oEB4g==
-  optionalDependencies:
-    "@bufbuild/buf-darwin-arm64" "1.26.1"
-    "@bufbuild/buf-darwin-x64" "1.26.1"
-    "@bufbuild/buf-linux-aarch64" "1.26.1"
-    "@bufbuild/buf-linux-x64" "1.26.1"
-    "@bufbuild/buf-win32-arm64" "1.26.1"
-    "@bufbuild/buf-win32-x64" "1.26.1"
-
 "@changesets/apply-release-plan@^6.1.4":
   version "6.1.4"
   resolved "https://registry.yarnpkg.com/@changesets/apply-release-plan/-/apply-release-plan-6.1.4.tgz#09293256090737ecd2f683842d6d732034a5e3c8"
@@ -3087,6 +3045,11 @@
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@protobufjs/utf8/-/utf8-1.1.0.tgz#a777360b5b39a1a2e5106f8e858f2fd2d060c570"
   integrity sha512-Vvn3zZrhQZkkBE8LSuW3em98c0FwgO4nxzv6OdSxPKJIEKY2bGbHn+mhGIPerzI4twdxaP8/0+06HBpwf345Lw==
+
+"@remix-run/router@1.9.0":
+  version "1.9.0"
+  resolved "https://registry.yarnpkg.com/@remix-run/router/-/router-1.9.0.tgz#9033238b41c4cbe1e961eccb3f79e2c588328cf6"
+  integrity sha512-bV63itrKBC0zdT27qYm6SDZHlkXwFL1xMBuhkn+X7l0+IIhNaH5wuuvZKp6eKhCD4KFhujhfhCT1YxXW6esUIA==
 
 "@rollup/plugin-babel@^5.2.0":
   version "5.3.1"
@@ -13419,6 +13382,21 @@ react-refresh@^0.11.0:
   version "0.11.0"
   resolved "https://registry.yarnpkg.com/react-refresh/-/react-refresh-0.11.0.tgz#77198b944733f0f1f1a90e791de4541f9f074046"
   integrity sha512-F27qZr8uUqwhWZboondsPx8tnC3Ct3SxZA3V5WyEvujRyyNv0VYPhoBg1gZ8/MV5tubQp76Trw8lTv9hzRBa+A==
+
+react-router-dom@^6.16.0:
+  version "6.16.0"
+  resolved "https://registry.yarnpkg.com/react-router-dom/-/react-router-dom-6.16.0.tgz#86f24658da35eb66727e75ecbb1a029e33ee39d9"
+  integrity sha512-aTfBLv3mk/gaKLxgRDUPbPw+s4Y/O+ma3rEN1u8EgEpLpPe6gNjIsWt9rxushMHHMb7mSwxRGdGlGdvmFsyPIg==
+  dependencies:
+    "@remix-run/router" "1.9.0"
+    react-router "6.16.0"
+
+react-router@6.16.0:
+  version "6.16.0"
+  resolved "https://registry.yarnpkg.com/react-router/-/react-router-6.16.0.tgz#abbf3d5bdc9c108c9b822a18be10ee004096fb81"
+  integrity sha512-VT4Mmc4jj5YyjpOi5jOf0I+TYzGpvzERy4ckNSvSh2RArv8LLoCxlsZ2D+tc7zgjxcY34oTz2hZaeX5RVprKqA==
+  dependencies:
+    "@remix-run/router" "1.9.0"
 
 react-scripts@5.0.1:
   version "5.0.1"

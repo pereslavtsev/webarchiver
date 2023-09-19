@@ -15,14 +15,7 @@ client.ListPages({ limit: 10, offset: 0 }).then(value => console.log(value))
 function App() {
   return (
     <div className="bp5-dark">
-      <Navbar>
-        <Navbar.Group align={Alignment.LEFT}>
-          <Navbar.Heading>Blueprint</Navbar.Heading>
-          <Navbar.Divider />
-          <Button className="bp5-minimal" icon="home" text="Home" />
-          <Button className="bp5-minimal" icon="document" text="Files" />
-        </Navbar.Group>
-      </Navbar>
+
 
       <Breadcrumbs
         // currentBreadcrumbRenderer={this.renderCurrentBreadcrumb}

@@ -1,18 +1,52 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.scss';
-import App from './App';
+// import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { FocusStyleManager } from "@blueprintjs/core";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import ErrorPage from "./routes/ErrorPage";
+import Root from "./Root";
+import PageDetails from "./routes/PageDetails";
+import PageList from "./routes/PageList";
+import WatcherList from "./routes/WatcherList";
+import WatcherDetails from "./routes/WatcherDetails";
 
 FocusStyleManager.onlyShowFocusOnTabs();
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Root />,
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        path: "pages",
+        element: <PageList />,
+      },
+      {
+        path: "pages/:pageId",
+        element: <PageDetails />,
+      },
+      {
+        path: "watchers",
+        element: <WatcherList />,
+      },
+      {
+        path: "watchers/:watcherId",
+        element: <WatcherDetails />,
+      }
+    ],
+  },
+]);
+
 root.render(
   <React.StrictMode>
-    <App />
+    <RouterProvider router={router} />
   </React.StrictMode>
 );
 
