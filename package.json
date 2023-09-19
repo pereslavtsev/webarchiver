@@ -6,8 +6,10 @@
   "author": "Vitaly Pereslavtsev <dev@pereslavtsev.com>",
   "license": "MIT",
   "scripts": {
+    "app": "lerna exec --scope app -- yarn",
     "server": "lerna exec --scope webarchiver -- yarn",
-    "proxy:run": "envoy -c ./envoy.yaml --log-level debug",
+    "proxy": "envoy -c ./envoy.yaml",
+    "proxy:debug": "yarn proxy --log-level debug",
     "postinstall": "husky install && yarn generate-lockfiles",
     "generate-lockfiles": "lerna exec -- generate-lockfile -p package.json -l ../../yarn.lock -w -d -f",
     "docker:local": "docker-compose --profile local",
