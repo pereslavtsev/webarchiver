@@ -30,7 +30,7 @@
     "rimraf": "^5.0.1",
     "ts-proto": "^1.157.0"
   },
-  "optionalDependencies": {
+  "peerDependencies": {
     "@bufbuild/buf": "^1.26.1"
   }
 }
