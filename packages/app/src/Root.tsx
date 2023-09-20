@@ -17,16 +17,17 @@ const Root: FC = () => {
         <Button icon="flash" minimal />
       </Navbar.Group>
     </Navbar>
-    <div style={{ padding: 30 }}>
-      <Tabs id="tab" animate fill selectedTabId="a">
-        <Tab id="b" icon="applications" title="Pages" tagContent={100} tagProps={{ round: true }} />
-        <Tab id="a" icon="intelligence" title="Watchers" tagContent={10} tagProps={{ round: true }} />
-        <Tab id="c" icon="database" title="Sources" tagContent={200} tagProps={{ round: true }} />
-        <Tab id="d" icon="exchange" title="Tasks" tagContent={10} tagProps={{ round: true }} />
-      </Tabs>
-    </div>
-
-    <div style={{ padding: 30 }}><Outlet /></div>
+    <Navbar style={{ background: 'none' }}>
+      <Navbar.Group align={Alignment.LEFT} >
+        <Tabs id="tab" animate fill selectedTabId="a">
+          <Tab id="b" icon="applications" title="Pages" tagContent={100} tagProps={{ round: true }} />
+          <Tab id="a" icon="intelligence" title="Watchers" tagContent={10} tagProps={{ round: true }} />
+          <Tab id="c" icon="database" title="Sources" tagContent={200} tagProps={{ round: true }} />
+          <Tab id="d" icon="exchange" title="Tasks" tagContent={10} tagProps={{ round: true }} />
+        </Tabs>
+      </Navbar.Group>
+    </Navbar>
+    <main className={'bp5-card'} style={{ boxShadow: 'none' }}><Outlet /></main>
   </div>
 }
 
