@@ -27,7 +27,9 @@ const Root: FC = () => {
         </Tabs>
       </Navbar.Group>
     </Navbar>
-    <main className={'bp5-card'} style={{ boxShadow: 'none' }}><Outlet /></main>
+    <main
+      // className={'bp5-card'}
+      style={{ boxShadow: 'none', padding: 15 }}><Outlet /></main>
   </div>
 }
 
