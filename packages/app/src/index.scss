@@ -6,3 +6,18 @@
 body {
   background: $pt-dark-app-background-color;
 }
+
+.metadata-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  > div {
+    display: flex;
+    //justify-content: space-between;
+
+    :first-child {
+      width: 150px;
+    }
+  }
+}

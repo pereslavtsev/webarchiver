@@ -11,6 +11,7 @@ import PageDetails from "./routes/PageDetails";
 import PageList from "./routes/PageList";
 import WatcherList from "./routes/WatcherList";
 import WatcherDetails from "./routes/WatcherDetails";
+import SourceListPage from "./routes/SourceListPage";
 
 FocusStyleManager.onlyShowFocusOnTabs();
 
@@ -31,6 +32,10 @@ const router = createBrowserRouter([
       {
         path: "pages/:pageId",
         element: <PageDetails />,
+      },
+      {
+        path: "sources",
+        element: <SourceListPage />,
       },
       {
         path: "watchers",
