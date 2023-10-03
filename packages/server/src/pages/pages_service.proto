@@ -30,7 +30,6 @@ message Page {
   google.protobuf.Timestamp created_at = 2;
   google.protobuf.Timestamp updated_at = 3;
   google.protobuf.Timestamp deleted_at = 4;
-  uint32 pageId = 10;
   string title = 11;
   bool redirect = 12;
   uint32 priority = 13;

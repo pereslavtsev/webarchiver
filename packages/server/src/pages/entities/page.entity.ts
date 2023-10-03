@@ -1,4 +1,4 @@
-import { Column, Entity, Generated, OneToMany, Relation } from 'typeorm';
+import { Column, Entity, Generated, OneToMany, PrimaryColumn, Relation } from "typeorm";
 import { BaseEntity } from '../../core/entities/base.entity';
 import { Source } from '../../sources/entities/source.entity';
 import { PageEvent } from '../enums/page-event.enum';
@@ -8,8 +8,8 @@ import { webarchiver } from '../../__generated__';
 export class Page extends BaseEntity implements webarchiver.v1.Page {
   static readonly Event = PageEvent;
 
-  @Column('int4', { unique: true })
-  pageId: number;
+  @PrimaryColumn('int4')
+  id: number;
   @Column('int2')
   namespace: number;
   @Column('varchar')

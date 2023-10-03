@@ -20,7 +20,7 @@ export class CrawlerBackgroundConsumer {
   @Process()
   protected async process(job: Job<Page>) {
     const { data: page } = job;
-    const { pageId } = page;
+    const { id: pageId } = page;
 
     // console.log('reading page', page);
     const apiPage = await this.bot.read(pageId, {

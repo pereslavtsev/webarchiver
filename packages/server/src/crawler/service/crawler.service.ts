@@ -10,7 +10,7 @@ import { IsNull } from 'typeorm';
 export class CrawlerService implements OnApplicationBootstrap {
   constructor(
     private readonly pagesService: PagesService,
-    @InjectQueue('crawler') private crawlerQueue: Queue<Page>,
+    @InjectQueue('crawler') private readonly crawlerQueue: Queue<Page>,
   ) {}
 
   async clearAll() {
@@ -30,7 +30,7 @@ export class CrawlerService implements OnApplicationBootstrap {
     const jobs = pages.map((page) => ({
       data: page,
       opts: {
-        jobId: page.pageId,
+        jobId: page.id,
       },
     }));
     return this.crawlerQueue.addBulk(jobs);

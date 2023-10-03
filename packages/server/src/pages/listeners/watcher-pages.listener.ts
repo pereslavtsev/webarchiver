@@ -15,7 +15,7 @@ export class WatcherPagesListener {
 
   protected transformApiPage(apiPage: ApiPage) {
     return this.pagesService.create({
-      pageId: apiPage.pageid,
+      id: apiPage.pageid,
       title: apiPage.title,
       namespace: apiPage.ns,
       redirect: apiPage['redirect'],
@@ -26,6 +26,6 @@ export class WatcherPagesListener {
   async handleWatcherResponseEvent(apiPages: ApiPage[]) {
     this.pagesReceivedTotal.inc(apiPages.length);
     const pages = apiPages.map((apiPage) => this.transformApiPage(apiPage));
-    await this.pagesService.upsert(pages, ['pageId']);
+    await this.pagesService.upsert(pages, ['id']);
   }
 }

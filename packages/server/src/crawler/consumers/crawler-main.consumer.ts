@@ -25,7 +25,7 @@ export class CrawlerMainConsumer {
   @OnGlobalQueueCompleted()
   async handleJobCompleted(jobId: JobId, result: string) {
     const { data: page } = await this.crawlerQueue.getJob(jobId);
-    const { id, title, pageId } = page;
+    const { id: pageId, title } = page;
     const { sources } = JSON.parse(result) as { sources: Partial<Source>[] };
     console.log(
       `page "${title}" (${pageId}) has been scanned, unarchived sources: ${sources.length}`,
@@ -38,9 +38,9 @@ export class CrawlerMainConsumer {
     try {
       await queryRunner.manager
         .getRepository(Page)
-        .update({ id }, { scannedAt: new Date() });
+        .update({ id: pageId }, { scannedAt: new Date() });
       await queryRunner.manager.getRepository(Source).upsert(
-        sources.map((source) => ({ ...source, pageId: id })),
+        sources.map((source) => ({ ...source, pageId })),
         ['url', 'pageId'],
       );
       await queryRunner.commitTransaction();

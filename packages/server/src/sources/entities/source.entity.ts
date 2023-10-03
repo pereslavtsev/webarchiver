@@ -7,6 +7,7 @@ import {
   JoinColumn,
   Unique,
   Relation,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 import { BaseEntity } from '../../core/entities/base.entity';
 import { Page } from '../../pages/entities/page.entity';
@@ -14,6 +15,8 @@ import { Page } from '../../pages/entities/page.entity';
 @Entity('sources')
 @Unique(['url', 'pageId'])
 export class Source extends BaseEntity {
+  @PrimaryGeneratedColumn('increment')
+  id: number;
   @Index()
   @Column('varchar')
   url: string;
