@@ -12,10 +12,10 @@ import { GrpcConfigService } from './core/services/grpc-config.service';
 import { ConfigService } from '@nestjs/config';
 import { LoggerMiddleware } from './core/middlewares/logger.middleware';
 import { Logger } from 'nestjs-pino';
+import { isMainProcess } from './consts';
 
 async function bootstrap() {
-  if (process.send === undefined) {
-    console.log('started directly');
+  if (isMainProcess) {
     if (isMainThread) {
       const childProcess = fork(__filename); // Создаем форкнутый процесс за пределами блока if
       process.once('exit', () => childProcess.kill());

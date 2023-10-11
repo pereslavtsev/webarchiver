@@ -4,7 +4,7 @@ import type { ApiParams as MwnApiParams, ApiResponse } from 'mwn';
 import type { ApiParams } from 'types-mediawiki/api_params';
 import * as logUtils from 'mwn/build/log';
 import { Bot } from '../classes/bot.class';
-import { AxiosRequestConfig } from 'axios';
+import { AxiosRequestConfig, AxiosResponse } from 'axios';
 import cj from 'color-json';
 import terminalLink from 'terminal-link';
 
@@ -19,10 +19,25 @@ export class BotService {
     Object.defineProperty(logUtils, 'log', { value: this.log.bind(this) });
     this.bot.httpClient.interceptors.request.use(
       this.handleHttpRequest.bind(this),
+      this.handleError.bind(this),
+    );
+    this.bot.httpClient.interceptors.response.use(
+      this.handleHttpResponse.bind(this),
+      this.handleError.bind(this),
     );
   }
 
-  protected handleHttpRequest(config: AxiosRequestConfig) {
+  protected handleError(error: unknown) {
+    this.logger.error(error);
+  }
+
+  protected handleHttpResponse(response: AxiosResponse): AxiosResponse {
+    const { status, statusText } = response;
+    this.logger.debug(`MediaWiki API Response: %d %s`, status, statusText);
+    return response;
+  }
+
+  protected handleHttpRequest(config: AxiosRequestConfig): AxiosRequestConfig {
     const { url, params, method } = config;
 
     const fullUrl = url + '?' + new URLSearchParams(params);

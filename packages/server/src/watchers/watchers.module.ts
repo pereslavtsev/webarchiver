@@ -11,10 +11,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Watcher } from './entities/watcher.entity';
 import { isMainThread, parentPort, workerData } from 'worker_threads';
 import { BotService } from '../bot/services/bot.service';
-import process from 'process';
 import { ConfigModule, ConfigType } from '@nestjs/config';
 import { WatchersController } from './controllers/watchers.controller';
 import watchersConfig from './config/watchers.config';
+import { isMainApp } from '../consts';
 
 const metadata: ModuleMetadata = {
   imports: [ConfigModule.forFeature(watchersConfig), BotModule],
@@ -23,7 +23,7 @@ const metadata: ModuleMetadata = {
   exports: [],
 };
 
-if (process.send === undefined && isMainThread) {
+if (isMainApp) {
   metadata.imports.push(TypeOrmModule.forFeature([Watcher]));
   metadata.controllers.push(WatchersController);
   metadata.providers.push(WatchersService);

@@ -45,6 +45,7 @@ export class CrawlerService implements OnApplicationBootstrap {
       const worker = new Worker(require.main.filename, {
         name: 'crawler',
         workerData: {
+          name: 'crawler',
           type: 'crawler',
           data: {},
         },

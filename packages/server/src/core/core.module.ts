@@ -16,25 +16,18 @@ import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 import { PrometheusConfigService } from './services/prometheus-config.service';
 import { GrpcConfigService } from './services/grpc-config.service';
 import { LoggerModule } from 'nestjs-pino';
-import { PrettyOptions } from 'pino-pretty';
-
-const prettyOptions: PrettyOptions = {
-  colorizeObjects: true,
-  singleLine: true,
-  translateTime: 'SYS:HH:MM:ss',
-};
+import { isProduction, prettyOptions, processName } from '../consts';
 
 const metadata: ModuleMetadata = {
   imports: [
     ConfigModule.forRoot({ envFilePath: '../../.env' }),
     LoggerModule.forRoot({
       pinoHttp: {
-        name: 'add some name to every JSON line',
-        level: process.env.NODE_ENV !== 'production' ? 'debug' : 'info',
-        transport:
-          process.env.NODE_ENV !== 'production'
-            ? { target: 'pino-pretty', options: prettyOptions }
-            : undefined,
+        name: processName,
+        level: !isProduction ? 'debug' : 'info',
+        transport: !isProduction
+          ? { target: 'pino-pretty', options: prettyOptions }
+          : undefined,
       },
     }),
   ],
