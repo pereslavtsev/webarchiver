@@ -5,6 +5,8 @@ import type { ApiParams } from 'types-mediawiki/api_params';
 import * as logUtils from 'mwn/build/log';
 import { Bot } from '../classes/bot.class';
 import { AxiosRequestConfig } from 'axios';
+import cj from 'color-json';
+import terminalLink from 'terminal-link';
 
 @Injectable()
 export class BotService {
@@ -28,7 +30,11 @@ export class BotService {
     switch (method) {
       case 'GET':
       case 'get': {
-        this.logger.debug(`API request: ${fullUrl}`);
+        this.logger.debug(
+          `MediaWiki API Request: %s %s`,
+          cj(params, undefined, undefined, 0),
+          terminalLink('link', fullUrl),
+        );
       }
     }
 

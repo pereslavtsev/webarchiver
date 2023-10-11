@@ -40,7 +40,7 @@ export class CrawlerService implements OnApplicationBootstrap {
     if (isMainThread) {
       // await this.pagesService.delete({});
       // await this.clearAll();
-      await this.synchroniseJobs();
+      // await this.synchroniseJobs();
 
       const worker = new Worker(require.main.filename, {
         name: 'crawler',

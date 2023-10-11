@@ -11,6 +11,7 @@ import { CrawlerModule } from './crawler/crawler.module';
 import { GrpcConfigService } from './core/services/grpc-config.service';
 import { ConfigService } from '@nestjs/config';
 import { LoggerMiddleware } from './core/middlewares/logger.middleware';
+import { Logger } from 'nestjs-pino';
 
 async function bootstrap() {
   if (process.send === undefined) {
@@ -18,7 +19,10 @@ async function bootstrap() {
     if (isMainThread) {
       const childProcess = fork(__filename); // Создаем форкнутый процесс за пределами блока if
       process.once('exit', () => childProcess.kill());
-      const app = await NestFactory.create(ArchiverModule);
+      const app = await NestFactory.create(ArchiverModule, {
+        bufferLogs: true,
+      });
+      app.useLogger(app.get(Logger));
       app.connectMicroservice<MicroserviceOptions>({
         strategy: app.get(IpcServer),
       });
@@ -37,17 +41,32 @@ async function bootstrap() {
       const { type } = workerData;
       switch (type) {
         case 'watcher': {
-          await NestFactory.createApplicationContext(WatchersModule);
+          const app = await NestFactory.createApplicationContext(
+            WatchersModule,
+            {
+              bufferLogs: true,
+            },
+          );
+          app.useLogger(app.get(Logger));
+          app.flushLogs();
           break;
         }
         case 'crawler': {
-          await NestFactory.createApplicationContext(CrawlerModule);
+          const app = await NestFactory.createApplicationContext(
+            CrawlerModule,
+            {
+              bufferLogs: true,
+            },
+          );
+          app.useLogger(app.get(Logger));
+          app.flushLogs();
           break;
         }
       }
     }
   } else {
-    const app = await NestFactory.create(AppModule);
+    const app = await NestFactory.create(AppModule, { bufferLogs: true });
+    app.useLogger(app.get(Logger));
     await app.listen(5001);
     // await CommandFactory.run(AppModule, ['warn', 'error']);
   }
