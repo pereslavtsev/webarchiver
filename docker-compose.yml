@@ -14,6 +14,7 @@ services:
       - ./buf.work.yaml:/usr/local/share/.config/yarn/global/buf.work.yaml
       - ./buf.yaml:/usr/local/share/.config/yarn/global/buf.yaml
       - ./packages/server/src:/usr/local/share/.config/yarn/global/packages/server/src
+      - ./packages/app/src:/usr/local/share/.config/yarn/global/packages/app/src
   server:
     container_name: server
     restart: unless-stopped

@@ -54,6 +54,7 @@
     "prom-client": "^14.2.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
+    "sql-highlight": "^4.4.0",
     "terminal-kit": "^3.0.0",
     "terminal-link": "2.1.1",
     "typeorm": "^0.3.17",

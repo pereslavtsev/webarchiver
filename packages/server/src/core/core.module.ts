@@ -16,7 +16,8 @@ import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 import { PrometheusConfigService } from './services/prometheus-config.service';
 import { GrpcConfigService } from './services/grpc-config.service';
 import { LoggerModule } from 'nestjs-pino';
-import { isProduction, prettyOptions, processName } from '../consts';
+import { isMainProcess, isProduction, prettyOptions, processName } from "../consts";
+import { TypeOrmLoggerService } from "./services/type-orm-logger.service";
 
 const metadata: ModuleMetadata = {
   imports: [
@@ -35,12 +36,13 @@ const metadata: ModuleMetadata = {
   exports: [],
 };
 
-if (process.send === undefined) {
+if (isMainProcess) {
   metadata.imports.push(
     BullModule.forRootAsync({
       useClass: BullConfigService,
     }),
   );
+  metadata.providers.push(TypeOrmLoggerService);
 }
 
 if (isMainThread) {
@@ -58,6 +60,7 @@ if (isMainThread) {
       EventEmitterModule.forRoot(),
       TypeOrmModule.forRootAsync({
         imports: [ConfigModule.forFeature(databaseConfig)],
+        extraProviders: [TypeOrmLoggerService],
         useClass: TypeOrmConfigService,
       }),
     );

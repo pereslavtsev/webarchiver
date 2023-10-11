@@ -8,6 +8,7 @@
   "scripts": {
     "app": "lerna exec --scope app -- yarn",
     "server": "lerna exec --scope webarchiver -- yarn",
+    "dev": "concurrently -n server,app \"yarn server start:dev\" \"yarn app start\"",
     "proxy": "envoy -c ./envoy.yaml",
     "proxy:debug": "yarn proxy --log-level debug",
     "postinstall": "husky install && yarn generate-lockfiles",
@@ -23,6 +24,7 @@
     "@commitlint/cli": "^17.7.1",
     "@commitlint/config-conventional": "^17.7.0",
     "@commitlint/config-lerna-scopes": "^17.7.0",
+    "concurrently": "^8.2.1",
     "cross-env": "^7.0.3",
     "generate-lockfile": "^0.0.12",
     "husky": "^8.0.3",
