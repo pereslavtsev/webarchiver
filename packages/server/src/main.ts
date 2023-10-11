@@ -2,7 +2,11 @@ import { AppModule } from './app.module';
 import { fork } from 'child_process';
 import process from 'process';
 import { NestFactory } from '@nestjs/core';
-import { GrpcOptions, MicroserviceOptions } from '@nestjs/microservices';
+import {
+  GrpcOptions,
+  MicroserviceOptions,
+  RpcException,
+} from '@nestjs/microservices';
 import { IpcServer } from 'nest-ipc';
 import { ArchiverModule } from './archiver/archiver.module';
 import { isMainThread, threadId, workerData } from 'worker_threads';
@@ -13,6 +17,11 @@ import { ConfigService } from '@nestjs/config';
 import { LoggerMiddleware } from './core/middlewares/logger.middleware';
 import { Logger } from 'nestjs-pino';
 import { isMainProcess } from './consts';
+import {
+  BadRequestException,
+  HttpException,
+  ValidationPipe,
+} from '@nestjs/common';
 
 async function bootstrap() {
   if (isMainProcess) {
@@ -23,15 +32,27 @@ async function bootstrap() {
         bufferLogs: true,
       });
       app.useLogger(app.get(Logger));
-      app.connectMicroservice<MicroserviceOptions>({
-        strategy: app.get(IpcServer),
-      });
+      app.useGlobalPipes(
+        new ValidationPipe({
+          transform: true,
+        }),
+      );
+      app.connectMicroservice<MicroserviceOptions>(
+        {
+          strategy: app.get(IpcServer),
+        },
+        {
+          inheritAppConfig: true,
+        },
+      );
       const configService = app.get(ConfigService);
       const grpcConfigService = app.get(GrpcConfigService);
       const grpcOptions = await grpcConfigService.createGrpcOptions();
       const grpcEnabled = configService.get('grpc.enabled');
       if (grpcEnabled) {
-        app.connectMicroservice<GrpcOptions>(grpcOptions);
+        app.connectMicroservice<GrpcOptions>(grpcOptions, {
+          inheritAppConfig: true,
+        });
       }
       app.enableShutdownHooks();
       await app.startAllMicroservices();

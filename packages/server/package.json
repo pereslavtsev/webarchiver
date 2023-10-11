@@ -37,6 +37,8 @@
     "boxen": "5.1.2",
     "bull": "^4.11.3",
     "chalk": "4.1.2",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.0",
     "cli-table3": "^0.6.3",
     "cliui": "^8.0.1",
     "color-json": "2.0.1",

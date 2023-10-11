@@ -8,6 +8,7 @@ plugins:
       - addGrpcMetadata=true
       - outputIndex=true
       - nestJs=true
+      - addNestjsRestParameter=true
       - useDate=true
   - name: web
     out: packages/app/src/__generated__

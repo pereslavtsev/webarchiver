@@ -11,6 +11,7 @@
     "dev": "concurrently -n server,app \"yarn server start:dev\" \"yarn app start\"",
     "proxy": "envoy -c ./envoy.yaml",
     "proxy:debug": "yarn proxy --log-level debug",
+    "proxy:docker": "docker-compose up envoy",
     "postinstall": "husky install && yarn generate-lockfiles",
     "generate-lockfiles": "lerna exec -- generate-lockfile -p package.json -l ../../yarn.lock -w -d -f",
     "docker:local": "docker-compose --profile local",
