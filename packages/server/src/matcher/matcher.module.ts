@@ -10,9 +10,12 @@ import { MatcherMainConsumer } from './consumers/matcher-main.consumer';
 import { SourcesModule } from '../sources/sources.module';
 import { MATCHER_QUEUE } from './matcher.consts';
 import { LoggerModule } from 'nestjs-pino';
+import { ConfigModule } from '@nestjs/config';
+import matcherConfig from './config/matcher.config';
 
 const metadata: ModuleMetadata = {
   imports: [
+    ConfigModule.forFeature(matcherConfig),
     BotModule,
     CoreModule,
     LoggerModule.forRoot(),

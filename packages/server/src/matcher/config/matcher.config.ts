@@ -1,5 +1,5 @@
 import { registerAs } from '@nestjs/config';
 
 export default registerAs('matcher', () => ({
-  enable: true,
+  enabled: false,
 }));

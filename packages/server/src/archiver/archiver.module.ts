@@ -15,6 +15,7 @@ import { WatchersModule } from '../watchers/watchers.module';
 import { PagesModule } from '../pages/pages.module';
 import { MatcherModule } from '../matcher/matcher.module';
 import { LoggerMiddleware } from '../core/middlewares/logger.middleware';
+import { TemplatesModule } from '../templates/templates.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { LoggerMiddleware } from '../core/middlewares/logger.middleware';
     WatchersModule,
     PagesModule,
     MatcherModule,
+    TemplatesModule,
   ],
   controllers: [AppController],
   providers: [ArchiverService],

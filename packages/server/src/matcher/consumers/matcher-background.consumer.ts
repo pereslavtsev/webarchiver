@@ -8,9 +8,14 @@ import { CiteWebTemplate } from '../../archiver/templates/cite-web.template';
 import { ActiveTemplate } from '../../archiver/classes/active-template.class';
 import { BaseCitationTemplate } from '../../archiver/templates/base-citation-template';
 import type { Source } from '../../sources/entities/source.entity';
-import { escapeRegExp, formatObject } from '../../utils';
+import { escapeRegExp, formatObject, hrtimeToMs } from '../../utils';
 import { MatcherProcessor } from '../matcher.decorators';
 import { InjectPinoLogger, PinoLogger } from 'nestjs-pino';
+import prettyBytes from 'pretty-bytes';
+import * as process from 'process';
+import { Duration } from 'luxon';
+import { NotFoundException } from '@nestjs/common';
+import { parentPort } from "worker_threads";
 
 @MatcherProcessor()
 export class MatcherBackgroundConsumer {
@@ -57,7 +62,7 @@ export class MatcherBackgroundConsumer {
       }
       return !activeTemplate.isArchived;
     });
-    let sources: Partial<Source>[] = unarchived.map(
+    const sources: Partial<Source>[] = unarchived.map(
       (citation: BaseCitationTemplate) => {
         return {
           url: citation.getParam('url').value.trim().toString().split('#')[0],
@@ -84,6 +89,8 @@ export class MatcherBackgroundConsumer {
 
     const sourcesCount = new Set(sources.map((source) => source.url)).size;
 
+    logger.debug('Fetching revisions for page "%s" ...', page.title);
+
     for await (const json of this.bot.continuedQueryGen({
       action: 'query',
       prop: 'revisions',
@@ -92,48 +99,77 @@ export class MatcherBackgroundConsumer {
       rvendid: tailRevisionId,
       rvslots: 'main',
       rvlimit: 'max',
-      rvprop: ['ids', 'content', 'comment', 'timestamp'],
+      rvprop: ['ids', 'content', 'comment', 'timestamp', 'size'],
     })) {
-      for (const revision of json.query.pages[0].revisions as ApiRevision[]) {
-        const matched = String(revision.slots.main.content).match(regexp);
-        // console.log('matched', matched);
-        if (!matched) {
-          continue;
-        }
-        [...matched]
-          .filter((match) => !sourcesMap.has(match))
-          .forEach((match) => sourcesMap.set(match, revision));
-      }
-      const progress = Math.floor((sourcesMap.size / sources.length) * 100);
-      if (progress !== job.progress()) {
-        await job.progress(progress);
-      }
-      if (sourcesMap.size >= sourcesCount) {
-        console.log(
-          `all sources (${sources.length}) has been matched with revisions, breaking a continued query...`,
-        );
-        break;
-      }
-    }
+      const revisions = json.query.pages[0].revisions;
 
-    if (sourcesMap.size !== sourcesCount) {
-      console.log(
-        'not matched',
-        sources
-          .map((source) => source.url)
-          .filter((url) => !sourcesMap.has(url)),
+      logger.debug(
+        'Revisions received for page "%s" : %d',
+        page.title,
+        revisions.length,
       );
-      throw new Error('not matched');
+      for (const revision of revisions as ApiRevision[]) {
+        logger.debug(
+          'Processing revision %d (%s) for page "%s" (%s) ...',
+          revision.revid,
+          revision.timestamp,
+          page.title,
+          prettyBytes(revision.size),
+        );
+        const start = process.hrtime();
+        // START
+        // const matched = String(revision.slots.main.content).match(regexp);
+        // // console.log('matched', matched);
+        // if (!matched) {
+        //   continue;
+        // }
+        // [...matched]
+        //   .filter((match) => !sourcesMap.has(match))
+        //   .forEach((match) => sourcesMap.set(match, revision));
+        const wkt = new this.bot.wikitext(revision.slots.main.content);
+        const templates = await this.parseTemplates(wkt);
+        parentPort.postMessage(templates);
+        // END
+        const end = process.hrtime(start);
+        const duration = Duration.fromMillis(hrtimeToMs(end));
+        logger.debug(
+          'Processing DONE revision %d (%s) for page "%s" (%s)',
+          revision.revid,
+          revision.timestamp,
+          page.title,
+          duration.toHuman({ unitDisplay: 'short', listStyle: 'short' }),
+        );
+      }
+      // const progress = Math.floor((sourcesMap.size / sources.length) * 100);
+      // if (progress !== job.progress()) {
+      //   await job.progress(progress);
+      // }
+      // if (sourcesMap.size >= sourcesCount) {
+      //   console.log(
+      //     `all sources (${sources.length}) has been matched with revisions, breaking a continued query...`,
+      //   );
+      //   break;
+      // }
     }
 
-    sources = sources.map((source) => {
-      const revision: ApiRevision = sourcesMap.get(source.url);
-      source.preferredAt = new Date(revision.timestamp);
-      source.revisionId = revision.revid;
-      return source;
-    });
+    // if (sourcesMap.size !== sourcesCount) {
+    //   console.log(
+    //     'not matched',
+    //     sources
+    //       .map((source) => source.url)
+    //       .filter((url) => !sourcesMap.has(url)),
+    //   );
+    //   throw new Error('not matched');
+    // }
+    //
+    // sources = sources.map((source) => {
+    //   const revision: ApiRevision = sourcesMap.get(source.url);
+    //   source.preferredAt = new Date(revision.timestamp);
+    //   source.revisionId = revision.revid;
+    //   return source;
+    // });
 
-    return { response: apiPage, sources };
+    return { response: apiPage, sources: [] };
   }
 
   protected async parseTemplates(wkt: MwnWikitext) {
