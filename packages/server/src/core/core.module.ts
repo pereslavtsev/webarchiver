@@ -37,7 +37,7 @@ const metadata: ModuleMetadata = {
     }),
   ],
   providers: [],
-  exports: [],
+  exports: [LoggerModule],
 };
 
 if (isMainProcess) {

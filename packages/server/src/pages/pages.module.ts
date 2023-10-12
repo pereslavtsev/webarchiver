@@ -6,9 +6,10 @@ import { WatcherPagesListener } from './listeners/watcher-pages.listener';
 import { PageSubscriber } from './subscribers/page.subscriber';
 import { makeCounterProvider } from '@willsoto/nestjs-prometheus';
 import { PagesController } from './controllers/pages.controller';
+import { Revision } from './entities/revision.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Page])],
+  imports: [TypeOrmModule.forFeature([Page, Revision])],
   controllers: [PagesController],
   providers: [
     PagesService,

@@ -11,7 +11,7 @@ import { IpcServer } from 'nest-ipc';
 import { ArchiverModule } from './archiver/archiver.module';
 import { isMainThread, threadId, workerData } from 'worker_threads';
 import { WatchersModule } from './watchers/watchers.module';
-import { CrawlerModule } from './crawler/crawler.module';
+import { MatcherModule } from './matcher/matcher.module';
 import { GrpcConfigService } from './core/services/grpc-config.service';
 import { ConfigService } from '@nestjs/config';
 import { LoggerMiddleware } from './core/middlewares/logger.middleware';
@@ -74,7 +74,7 @@ async function bootstrap() {
         }
         case 'crawler': {
           const app = await NestFactory.createApplicationContext(
-            CrawlerModule,
+            MatcherModule,
             {
               bufferLogs: true,
             },

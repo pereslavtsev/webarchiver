@@ -1,25 +1,24 @@
 import {
-  InjectQueue,
   OnGlobalQueueCompleted,
   OnGlobalQueueFailed,
   OnGlobalQueueProgress,
   OnGlobalQueueDrained,
-  Processor,
 } from '@nestjs/bull';
 import { Job, JobId, Queue } from 'bull';
 import { Page } from '../../pages/entities/page.entity';
 import { Source } from '../../sources/entities/source.entity';
 import { DataSource } from 'typeorm';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { CrawlerService } from '../service/crawler.service';
+import { MatcherService } from '../service/matcher.service';
+import { InjectMatcherQueue, MatcherProcessor } from '../matcher.decorators';
 
-@Processor('crawler')
-export class CrawlerMainConsumer {
+@MatcherProcessor()
+export class MatcherMainConsumer {
   constructor(
     private readonly eventEmitter: EventEmitter2,
     private readonly dataSource: DataSource,
-    @InjectQueue('crawler') private crawlerQueue: Queue<Page>,
-    private readonly crawlerService: CrawlerService,
+    @InjectMatcherQueue() private readonly crawlerQueue: Queue<Page>,
+    private readonly crawlerService: MatcherService,
   ) {}
 
   @OnGlobalQueueCompleted()

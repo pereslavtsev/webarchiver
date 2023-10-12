@@ -1,4 +1,4 @@
-import { Processor, Process } from '@nestjs/bull';
+import { Process } from '@nestjs/bull';
 import { Job } from 'bull';
 import { Page } from '../../pages/entities/page.entity';
 import { InjectBot } from '../../bot/decorators/inject-bot.decorator';
@@ -8,21 +8,34 @@ import { CiteWebTemplate } from '../../archiver/templates/cite-web.template';
 import { ActiveTemplate } from '../../archiver/classes/active-template.class';
 import { BaseCitationTemplate } from '../../archiver/templates/base-citation-template';
 import type { Source } from '../../sources/entities/source.entity';
-import { escapeRegExp } from '../../utils';
+import { escapeRegExp, formatObject } from '../../utils';
+import { MatcherProcessor } from '../matcher.decorators';
+import { InjectPinoLogger, PinoLogger } from 'nestjs-pino';
 
-@Processor('crawler')
-export class CrawlerBackgroundConsumer {
+@MatcherProcessor()
+export class MatcherBackgroundConsumer {
   constructor(
     @InjectBot()
     private readonly bot: Bot,
+    @InjectPinoLogger(MatcherBackgroundConsumer.name)
+    private readonly logger: PinoLogger,
   ) {}
 
   @Process()
   protected async process(job: Job<Page>) {
+    const logger = this.logger.logger.child({
+      context: MatcherBackgroundConsumer.name,
+      jobId: job.id,
+    });
+
     const { data: page } = job;
     const { id: pageId } = page;
 
-    // console.log('reading page', page);
+    logger.debug(
+      'Reading page: "%s" -- data: %s',
+      page.title,
+      formatObject(page),
+    );
     const apiPage = await this.bot.read(pageId, {
       rvprop: ['ids', 'timestamp', 'content'],
     });

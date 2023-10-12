@@ -17,7 +17,7 @@ import { WatchersModule } from './watchers/watchers.module';
 import { PagesModule } from './pages/pages.module';
 import { TerminalModule } from './terminal/terminal.module';
 import { InjectTerminal } from './terminal/decorators/inject-bot.decorator';
-import { CrawlerModule } from './crawler/crawler.module';
+import { MatcherModule } from './matcher/matcher.module';
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 

@@ -13,7 +13,7 @@ import { SourcesModule } from '../sources/sources.module';
 import { MementoModule } from '../memento/memento.module';
 import { WatchersModule } from '../watchers/watchers.module';
 import { PagesModule } from '../pages/pages.module';
-import { CrawlerModule } from '../crawler/crawler.module';
+import { MatcherModule } from '../matcher/matcher.module';
 import { LoggerMiddleware } from '../core/middlewares/logger.middleware';
 
 @Module({
@@ -23,7 +23,7 @@ import { LoggerMiddleware } from '../core/middlewares/logger.middleware';
     MementoModule,
     WatchersModule,
     PagesModule,
-    CrawlerModule,
+    MatcherModule,
   ],
   controllers: [AppController],
   providers: [ArchiverService],

@@ -1,8 +1,16 @@
-import { Column, Entity, Generated, OneToMany, PrimaryColumn, Relation } from "typeorm";
+import {
+  Column,
+  Entity,
+  Generated,
+  OneToMany,
+  PrimaryColumn,
+  Relation,
+} from 'typeorm';
 import { BaseEntity } from '../../core/entities/base.entity';
 import { Source } from '../../sources/entities/source.entity';
 import { PageEvent } from '../enums/page-event.enum';
 import { webarchiver } from '../../__generated__';
+import { Revision } from './revision.entity';
 
 @Entity('pages')
 export class Page extends BaseEntity implements webarchiver.v1.Page {
@@ -23,4 +31,8 @@ export class Page extends BaseEntity implements webarchiver.v1.Page {
   scannedAt: Date;
   @OneToMany(() => Source, (source) => source.page, { cascade: ['insert'] })
   readonly sources: Relation<Source>[];
+  @OneToMany(() => Revision, (revision) => revision.page, {
+    cascade: ['insert'],
+  })
+  readonly revisions: Relation<Revision>[];
 }

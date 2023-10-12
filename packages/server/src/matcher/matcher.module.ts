@@ -1,20 +1,23 @@
 import { Module, ModuleMetadata } from '@nestjs/common';
-import { CrawlerService } from './service/crawler.service';
+import { MatcherService } from './service/matcher.service';
 import { PagesModule } from '../pages/pages.module';
 import { BotModule } from '../bot/bot.module';
 import { CoreModule } from '../core/core.module';
 import { BullModule } from '@nestjs/bull';
-import { CrawlerBackgroundConsumer } from './consumers/crawler-background.consumer';
+import { MatcherBackgroundConsumer } from './consumers/matcher-background.consumer';
 import { isMainThread } from 'worker_threads';
-import { CrawlerMainConsumer } from './consumers/crawler-main.consumer';
+import { MatcherMainConsumer } from './consumers/matcher-main.consumer';
 import { SourcesModule } from '../sources/sources.module';
+import { MATCHER_QUEUE } from './matcher.consts';
+import { LoggerModule } from 'nestjs-pino';
 
 const metadata: ModuleMetadata = {
   imports: [
     BotModule,
     CoreModule,
+    LoggerModule.forRoot(),
     BullModule.registerQueue({
-      name: 'crawler',
+      name: MATCHER_QUEUE,
       settings: {
         maxStalledCount: 10 * 60 * 1000,
       },
@@ -24,11 +27,11 @@ const metadata: ModuleMetadata = {
 };
 
 if (!isMainThread) {
-  metadata.providers.push(CrawlerBackgroundConsumer);
+  metadata.providers.push(MatcherBackgroundConsumer);
 } else {
   metadata.imports.push(PagesModule, SourcesModule);
-  metadata.providers.push(CrawlerMainConsumer, CrawlerService);
+  metadata.providers.push(MatcherMainConsumer, MatcherService);
 }
 
 @Module(metadata)
-export class CrawlerModule {}
+export class MatcherModule {}
