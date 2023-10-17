@@ -11,7 +11,5 @@ export class PageReceivedListener {
     private readonly bot: mwn,
   ) {}
 
-  handlePageReceivedEvent(page: ApiPage) {
-    const wkt = new this.bot.wikitext(page.revisions[0].content);
-  }
+  handlePageReceivedEvent(page: ApiPage) {}
 }

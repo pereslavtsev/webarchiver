@@ -3,9 +3,10 @@ import { TemplatesService } from './services/templates.service';
 import { isMainApp } from '../consts';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Template } from './entities/template.entity';
+import { BotModule } from '../bot/bot.module';
 
 const metadata: ModuleMetadata = {
-  imports: [],
+  imports: [BotModule],
   providers: [],
   exports: [],
 };
