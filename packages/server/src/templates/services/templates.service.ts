@@ -7,6 +7,7 @@ import { InjectBot } from '../../bot/decorators/inject-bot.decorator';
 import { Bot } from '../../bot/classes/bot.class';
 import { EntityMap } from '../../core/types';
 import type { ApiPage } from 'mwn';
+import { isMainThread } from 'worker_threads';
 
 @Injectable()
 export class TemplatesService
@@ -28,8 +29,10 @@ export class TemplatesService
   }
 
   async onApplicationBootstrap(): Promise<void> {
-    await this.upsert(TEMPLATES_MOCK, ['id']);
-    await this.synchronise();
+    if (isMainThread) {
+      await this.upsert(TEMPLATES_MOCK, ['id']);
+      await this.synchronise();
+    }
   }
 
   async synchronise() {
@@ -59,8 +62,8 @@ export class TemplatesService
       }
 
       template.pageId = pageid;
-      template.aliases = apiPages[index]['linkshere'].map(
-        (link: ApiPage) => link.title.split(':', 2)[1].toLowerCase(),
+      template.aliases = apiPages[index]['linkshere'].map((link: ApiPage) =>
+        link.title.split(':', 2)[1].toLowerCase(),
       );
     });
 
@@ -86,5 +89,9 @@ export class TemplatesService
       namePredicate: this.regexp.test,
     });
     return templates;
+  }
+
+  getRegExp() {
+    return this.regexp;
   }
 }

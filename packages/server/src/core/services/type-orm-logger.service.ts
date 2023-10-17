@@ -5,13 +5,24 @@ import { highlight } from 'sql-highlight';
 @Injectable()
 export class TypeOrmLoggerService implements ITypeOrmLogger {
   private readonly logger = new Logger('SQL');
+  private readonly separator = ' -- ';
 
   /**
    * Logs query and parameters used in it.
    */
   logQuery(query: string, parameters?: any[]): void {
+    const message = [];
+
+    if (query) {
+      message.push('query: %s');
+    }
+
+    if (parameters) {
+      message.push('parameters: %o');
+    }
+
     this.logger.debug(
-      `query: %s -- parameters: %o`,
+      message.join(this.separator),
       highlight(query),
       parameters,
     );

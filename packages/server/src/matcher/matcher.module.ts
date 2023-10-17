@@ -12,6 +12,7 @@ import { MATCHER_QUEUE } from './matcher.consts';
 import { LoggerModule } from 'nestjs-pino';
 import { ConfigModule } from '@nestjs/config';
 import matcherConfig from './config/matcher.config';
+import { TemplatesModule } from '../templates/templates.module';
 
 const metadata: ModuleMetadata = {
   imports: [
@@ -32,7 +33,7 @@ const metadata: ModuleMetadata = {
 if (!isMainThread) {
   metadata.providers.push(MatcherBackgroundConsumer);
 } else {
-  metadata.imports.push(PagesModule, SourcesModule);
+  metadata.imports.push(PagesModule, SourcesModule, TemplatesModule);
   metadata.providers.push(MatcherMainConsumer, MatcherService);
 }
 
