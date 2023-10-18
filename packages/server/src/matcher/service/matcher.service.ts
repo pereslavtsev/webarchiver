@@ -40,7 +40,7 @@ export class MatcherService implements OnApplicationBootstrap {
       // where: {
       //   scannedAt: IsNull(),
       // },
-      order: { priority: 'asc', createdAt: 'desc' },
+      order: { priority: 'desc', createdAt: 'desc' },
     });
     const jobs = pages.map((page) => ({
       data: page,
@@ -78,12 +78,19 @@ export class MatcherService implements OnApplicationBootstrap {
     }
   }
 
-  protected async handleWorkerMessage(message: object) {
-    // this.logger.debug(
-    //   { threadId: this.worker.threadId },
-    //   'Handle worker thread message: %s',
-    //   formatObject(message),
-    // );
+  protected async handleWorkerMessage(message: any) {
+    this.logger.debug(
+      { threadId: this.worker.threadId },
+      'Handle worker thread message...',
+    );
+    const { eventName, payload } = message;
+    switch (eventName) {
+      case 'revision.received': {
+        console.log(payload);
+        break;
+      }
+    }
+    console.log('message', { message });
   }
 
   protected handleWorkerStarted() {

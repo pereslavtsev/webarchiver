@@ -15,7 +15,8 @@ import prettyBytes from 'pretty-bytes';
 import * as process from 'process';
 import { Duration } from 'luxon';
 import { NotFoundException } from '@nestjs/common';
-import { parentPort } from "worker_threads";
+import { parentPort } from 'worker_threads';
+import { ActiveTemplatesService } from '../../bot/services/active-templates.service';
 
 @MatcherProcessor()
 export class MatcherBackgroundConsumer {
@@ -24,6 +25,7 @@ export class MatcherBackgroundConsumer {
     private readonly bot: Bot,
     @InjectPinoLogger(MatcherBackgroundConsumer.name)
     private readonly logger: PinoLogger,
+    private readonly activeTemplatesService: ActiveTemplatesService,
   ) {}
 
   @Process()
@@ -126,9 +128,19 @@ export class MatcherBackgroundConsumer {
         // [...matched]
         //   .filter((match) => !sourcesMap.has(match))
         //   .forEach((match) => sourcesMap.set(match, revision));
-        const wkt = new this.bot.wikitext(revision.slots.main.content);
-        const templates = await this.parseTemplates(wkt);
-        parentPort.postMessage(templates);
+        const templates = this.activeTemplatesService.extract(
+          revision.slots.main.content,
+        );
+        console.log('templates', templates.length);
+
+        const { revid: id, parentid: parentId, timestamp } = revision;
+        parentPort.postMessage({
+          eventName: 'revision.received',
+          payload: {
+            revision: { id, parentId, timestamp, pageId },
+            templates: JSON.parse(JSON.stringify(templates)),
+          },
+        });
         // END
         const end = process.hrtime(start);
         const duration = Duration.fromMillis(hrtimeToMs(end));

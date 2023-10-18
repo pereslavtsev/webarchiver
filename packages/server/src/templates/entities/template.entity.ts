@@ -13,4 +13,14 @@ export class Template extends BaseEntity {
   pageId: ApiPage['pageid'];
   @Column({ type: 'varchar', array: true, default: [] })
   aliases: Array<ApiPage['title']>;
+
+  get regexp(): RegExp {
+    return new RegExp(
+      [
+        this.title.toLowerCase(),
+        ...this.aliases.map((alias) => alias.toLowerCase()),
+      ].join('|'),
+      'i',
+    );
+  }
 }

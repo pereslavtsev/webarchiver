@@ -1,5 +1,5 @@
 import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { DeepPartial, Repository } from 'typeorm';
 import { Template } from '../entities/template.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TEMPLATES_MOCK } from '../templates.mock';
@@ -35,6 +35,12 @@ export class TemplatesService
     }
   }
 
+  async save(entities: Template[], options?: any): Promise<Template[]> {
+    const templates = await super.save(entities, options);
+    templates.forEach((template) => this.map.set(template.id, template));
+    return templates;
+  }
+
   async synchronise() {
     const templates = await this.find();
     const titles = templates.map((template) =>
@@ -68,10 +74,9 @@ export class TemplatesService
     });
 
     await this.save(templates);
-    templates.forEach((template) => this.map.set(template.id, template));
 
     const regexp = [...templates.values()]
-      .flatMap((template) => template.aliases)
+      .map((template) => template.regexp.source)
       .join('|');
 
     this.regexp = new RegExp(regexp, 'i');
@@ -81,14 +86,6 @@ export class TemplatesService
       '%d templates has been successfully synchronised',
       templates.length,
     );
-  }
-
-  extract(text: string) {
-    const wkt = new this.bot.wikitext(text);
-    const templates = wkt.parseTemplates({
-      namePredicate: this.regexp.test,
-    });
-    return templates;
   }
 
   getRegExp() {
