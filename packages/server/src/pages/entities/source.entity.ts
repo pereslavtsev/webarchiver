@@ -1,4 +1,3 @@
-import { ActiveTemplate } from '../../archiver/classes/active-template.class';
 import {
   Column,
   Entity,
@@ -10,10 +9,11 @@ import {
 } from 'typeorm';
 import { BaseEntity } from '../../core/entities/base.entity';
 import { Revision } from './revision.entity';
+import { CiteWebTemplate } from '../../archiver/templates/cite-web.template';
 
 @Entity('sources')
 export class Source extends BaseEntity {
-  @PrimaryGeneratedColumn('increment')
+  @PrimaryGeneratedColumn('uuid')
   id: number;
   @Index()
   @Column('varchar')
@@ -27,7 +27,7 @@ export class Source extends BaseEntity {
   @Column('date', { nullable: true })
   archiveDate: Date = null;
   @Column('varchar')
-  wikitextBefore: ActiveTemplate['wikitext'];
+  wikitextBefore: CiteWebTemplate['wikitext'];
   @Column('int4')
   revisionId: Revision['id'];
   @ManyToOne(() => Revision, (revision) => revision.sources, {
