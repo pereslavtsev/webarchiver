@@ -4,11 +4,13 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryColumn,
   Relation,
 } from 'typeorm';
 import { Page } from './page.entity';
 import { ApiRevision } from 'mwn';
+import { Source } from './source.entity';
 
 @Entity('revisions')
 export class Revision extends BaseEntity {
@@ -25,6 +27,9 @@ export class Revision extends BaseEntity {
   })
   @JoinColumn({ name: 'page_id' })
   page: Relation<Page>;
+
+  @OneToMany(() => Source, (source) => source.revision, { cascade: true })
+  sources: Source[];
 
   static makeFromApiResponse(apiRevision: ApiRevision): Revision {
     const revision = new Revision();

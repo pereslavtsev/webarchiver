@@ -9,7 +9,6 @@ import { AppController } from '../app.controller';
 import { IpcService, NestIpcServer, OnIpcInit } from 'nest-ipc';
 import { CoreModule } from '../core/core.module';
 import { ArchiverService } from './archiver.service';
-import { SourcesModule } from '../sources/sources.module';
 import { MementoModule } from '../memento/memento.module';
 import { WatchersModule } from '../watchers/watchers.module';
 import { PagesModule } from '../pages/pages.module';
@@ -20,7 +19,6 @@ import { TemplatesModule } from '../templates/templates.module';
 @Module({
   imports: [
     CoreModule,
-    SourcesModule,
     MementoModule,
     WatchersModule,
     PagesModule,

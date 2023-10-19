@@ -5,23 +5,19 @@ import {
   Index,
   ManyToOne,
   JoinColumn,
-  Unique,
   Relation,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { BaseEntity } from '../../core/entities/base.entity';
-import { Page } from '../../pages/entities/page.entity';
+import { Revision } from './revision.entity';
 
 @Entity('sources')
-@Unique(['url', 'pageId'])
 export class Source extends BaseEntity {
   @PrimaryGeneratedColumn('increment')
   id: number;
   @Index()
   @Column('varchar')
   url: string;
-  @Column('int4')
-  revisionId: number;
   @Column('timestamptz')
   preferredAt: Date;
   @Column('date', { nullable: true })
@@ -33,10 +29,10 @@ export class Source extends BaseEntity {
   @Column('varchar')
   wikitextBefore: ActiveTemplate['wikitext'];
   @Column('int4')
-  pageId: Page['id'];
-  @ManyToOne(() => Page, (page) => page.sources, {
+  revisionId: Revision['id'];
+  @ManyToOne(() => Revision, (revision) => revision.sources, {
     onDelete: 'CASCADE',
   })
-  @JoinColumn({ name: 'page_id' })
-  page: Relation<Page>;
+  @JoinColumn({ name: 'revision_id' })
+  revision: Relation<Revision>;
 }

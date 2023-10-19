@@ -7,7 +7,7 @@ import { ApiRevision, MwnWikitext } from 'mwn';
 import { CiteWebTemplate } from '../../archiver/templates/cite-web.template';
 import { ActiveTemplate } from '../../archiver/classes/active-template.class';
 import { BaseCitationTemplate } from '../../archiver/templates/base-citation-template';
-import type { Source } from '../../sources/entities/source.entity';
+import type { Source } from '../../pages/entities/source.entity';
 import { escapeRegExp, formatObject, hrtimeToMs } from '../../utils';
 import { MatcherProcessor } from '../matcher.decorators';
 import { InjectPinoLogger, PinoLogger } from 'nestjs-pino';

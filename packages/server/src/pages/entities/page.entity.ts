@@ -7,7 +7,6 @@ import {
   Relation,
 } from 'typeorm';
 import { BaseEntity } from '../../core/entities/base.entity';
-import { Source } from '../../sources/entities/source.entity';
 import { PageEvent } from '../enums/page-event.enum';
 import { webarchiver } from '../../__generated__';
 import { Revision } from './revision.entity';
@@ -29,8 +28,6 @@ export class Page extends BaseEntity implements webarchiver.v1.Page {
   priority: number;
   @Column('timestamptz', { nullable: true })
   scannedAt: Date;
-  @OneToMany(() => Source, (source) => source.page, { cascade: ['insert'] })
-  readonly sources: Relation<Source>[];
   @OneToMany(() => Revision, (revision) => revision.page, {
     cascade: ['insert'],
   })

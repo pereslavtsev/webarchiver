@@ -7,12 +7,17 @@ import { PageSubscriber } from './subscribers/page.subscriber';
 import { makeCounterProvider } from '@willsoto/nestjs-prometheus';
 import { PagesController } from './controllers/pages.controller';
 import { Revision } from './entities/revision.entity';
+import { Source } from './entities/source.entity';
+import { SourcesService } from './services/sources.service';
+import { RevisionsService } from './services/revisions.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Page, Revision])],
+  imports: [TypeOrmModule.forFeature([Page, Revision, Source])],
   controllers: [PagesController],
   providers: [
     PagesService,
+    RevisionsService,
+    SourcesService,
     WatcherPagesListener,
     PageSubscriber,
     makeCounterProvider({
@@ -24,6 +29,6 @@ import { Revision } from './entities/revision.entity';
       help: 'Total pages received',
     }),
   ],
-  exports: [PagesService],
+  exports: [PagesService, RevisionsService, SourcesService],
 })
 export class PagesModule {}

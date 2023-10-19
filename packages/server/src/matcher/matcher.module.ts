@@ -7,12 +7,12 @@ import { BullModule } from '@nestjs/bull';
 import { MatcherBackgroundConsumer } from './consumers/matcher-background.consumer';
 import { isMainThread } from 'worker_threads';
 import { MatcherMainConsumer } from './consumers/matcher-main.consumer';
-import { SourcesModule } from '../sources/sources.module';
-import { MATCHER_QUEUE } from './matcher.consts';
 import { LoggerModule } from 'nestjs-pino';
 import { ConfigModule } from '@nestjs/config';
 import matcherConfig from './config/matcher.config';
 import { TemplatesModule } from '../templates/templates.module';
+import { MatcherQueueConfigService } from './service/matcher-queue-config.service';
+import { MATCHER_QUEUE } from './matcher.consts';
 
 const metadata: ModuleMetadata = {
   imports: [
@@ -20,11 +20,9 @@ const metadata: ModuleMetadata = {
     BotModule,
     CoreModule,
     LoggerModule.forRoot(),
-    BullModule.registerQueue({
+    BullModule.registerQueueAsync({
+      useClass: MatcherQueueConfigService,
       name: MATCHER_QUEUE,
-      settings: {
-        maxStalledCount: 10 * 60 * 1000,
-      },
     }),
   ],
   providers: [],
@@ -33,7 +31,7 @@ const metadata: ModuleMetadata = {
 if (!isMainThread) {
   metadata.providers.push(MatcherBackgroundConsumer);
 } else {
-  metadata.imports.push(PagesModule, SourcesModule, TemplatesModule);
+  metadata.imports.push(PagesModule, TemplatesModule);
   metadata.providers.push(MatcherMainConsumer, MatcherService);
 }
 

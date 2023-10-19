@@ -10,7 +10,6 @@ import ipc from 'node-ipc';
 import { ClientsModule, MessagePattern } from '@nestjs/microservices';
 import { UiController } from './ui.controller';
 import { CoreModule } from './core/core.module';
-import { SourcesModule } from './sources/sources.module';
 import { BotModule } from './bot/bot.module';
 import { MementoModule } from './memento/memento.module';
 import { WatchersModule } from './watchers/watchers.module';
