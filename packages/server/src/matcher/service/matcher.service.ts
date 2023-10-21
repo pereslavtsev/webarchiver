@@ -14,6 +14,7 @@ import { ConfigType } from '@nestjs/config';
 import matcherConfig from '../config/matcher.config';
 import { formatObject } from '../../utils';
 import { TemplatesService } from '../../templates/services/templates.service';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class MatcherService implements OnApplicationBootstrap {
@@ -24,6 +25,7 @@ export class MatcherService implements OnApplicationBootstrap {
     @Inject(matcherConfig.KEY)
     private readonly config: ConfigType<typeof matcherConfig>,
     private readonly pagesService: PagesService,
+    private readonly eventEmitter: EventEmitter2,
     private readonly templatesService: TemplatesService,
     @InjectMatcherQueue() private readonly matcherQueue: Queue<Page>,
   ) {}
@@ -60,7 +62,7 @@ export class MatcherService implements OnApplicationBootstrap {
             name: 'matcher',
             type: 'crawler',
             data: {
-              regexp: this.templatesService.getRegExp(),
+              templates: JSON.stringify(this.templatesService.getMap()),
             },
           },
         });
@@ -86,11 +88,11 @@ export class MatcherService implements OnApplicationBootstrap {
     const { eventName, payload } = message;
     switch (eventName) {
       case 'revision.received': {
-        console.log(payload);
+        await this.eventEmitter.emitAsync('revision.received', payload);
         break;
       }
     }
-    console.log('message', { message });
+    // console.log('message', { message });
   }
 
   protected handleWorkerStarted() {

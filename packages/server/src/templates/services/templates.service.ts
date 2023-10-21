@@ -1,20 +1,20 @@
 import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common';
-import { DeepPartial, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Template } from '../entities/template.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TEMPLATES_MOCK } from '../templates.mock';
 import { InjectBot } from '../../bot/decorators/inject-bot.decorator';
 import { Bot } from '../../bot/classes/bot.class';
-import { EntityMap } from '../../core/types';
 import type { ApiPage } from 'mwn';
 import { isMainThread } from 'worker_threads';
+import { TemplateMap } from '../classes/template-map.class';
 
 @Injectable()
 export class TemplatesService
   extends Repository<Template>
   implements OnApplicationBootstrap
 {
-  private readonly map: EntityMap<Template> = new Map();
+  private readonly map = new TemplateMap();
   private readonly logger = new Logger(TemplatesService.name);
 
   private regexp: RegExp;
@@ -37,11 +37,12 @@ export class TemplatesService
 
   async save(entities: Template[], options?: any): Promise<Template[]> {
     const templates = await super.save(entities, options);
-    templates.forEach((template) => this.map.set(template.id, template));
+    this.map.push(...templates);
     return templates;
   }
 
   async synchronise() {
+    // this.logger.log('synchronising templates...');
     const templates = await this.find();
     const titles = templates.map((template) =>
       new this.bot.title(template.title, 10).toText(),
@@ -90,5 +91,9 @@ export class TemplatesService
 
   getRegExp() {
     return this.regexp;
+  }
+
+  getMap() {
+    return this.map;
   }
 }

@@ -10,6 +10,7 @@ import { BaseEntity } from '../../core/entities/base.entity';
 import { PageEvent } from '../enums/page-event.enum';
 import { webarchiver } from '../../__generated__';
 import { Revision } from './revision.entity';
+import { PageHistory } from './page-history.entity';
 
 @Entity('pages')
 export class Page extends BaseEntity implements webarchiver.v1.Page {
@@ -26,10 +27,10 @@ export class Page extends BaseEntity implements webarchiver.v1.Page {
   @Column('int4')
   @Generated('increment')
   priority: number;
-  @Column('timestamptz', { nullable: true })
-  scannedAt: Date;
-  @OneToMany(() => Revision, (revision) => revision.page, {
-    cascade: ['insert'],
+  @OneToMany(() => PageHistory, (pageHistory) => pageHistory.page, {
+    cascade: ['insert', 'update'],
   })
+  readonly history: Relation<PageHistory>[];
+  @OneToMany(() => Revision, (revision) => revision.page)
   readonly revisions: Relation<Revision>[];
 }

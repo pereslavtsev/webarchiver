@@ -1,5 +1,11 @@
 import cj from 'color-json';
 
+const URL_REGEX = /(https?:\/\/[^ ]*)/;
+
+export function escapeUrl(string: string) {
+  return string.match(URL_REGEX)[1];
+}
+
 export function escapeRegExp(string: string): string {
   return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
 }

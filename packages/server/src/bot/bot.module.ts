@@ -9,14 +9,12 @@ import botConfig from './config/bot.config';
 import { InjectBot } from './decorators/inject-bot.decorator';
 import { BotService } from './services/bot.service';
 import { Bot } from './classes/bot.class';
-import { ActiveTemplatesService } from './services/active-templates.service';
 
 @Module({
   imports: [ConfigModule.forFeature(botConfig)],
   providers: [
     BotService,
     BotConfigService,
-    ActiveTemplatesService,
     {
       provide: 'MWN_INSTANCE',
       inject: [BotConfigService],
@@ -26,7 +24,7 @@ import { ActiveTemplatesService } from './services/active-templates.service';
       },
     },
   ],
-  exports: ['MWN_INSTANCE', BotService, ActiveTemplatesService],
+  exports: ['MWN_INSTANCE', BotService],
 })
 export class BotModule implements OnModuleInit, BeforeApplicationShutdown {
   constructor(

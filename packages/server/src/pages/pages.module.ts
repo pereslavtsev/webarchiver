@@ -10,15 +10,22 @@ import { Revision } from './entities/revision.entity';
 import { Source } from './entities/source.entity';
 import { SourcesService } from './services/sources.service';
 import { RevisionsService } from './services/revisions.service';
+import { RevisionReceivedListener } from './listeners/revision-received.listener';
+import { PageListener } from './listeners/page.listener';
+import { PageHistory } from './entities/page-history.entity';
+import { PageHistoryService } from './services/page-history.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Page, Revision, Source])],
+  imports: [TypeOrmModule.forFeature([Page, PageHistory, Revision, Source])],
   controllers: [PagesController],
   providers: [
     PagesService,
+    PageHistoryService,
     RevisionsService,
     SourcesService,
     WatcherPagesListener,
+    PageListener,
+    RevisionReceivedListener,
     PageSubscriber,
     makeCounterProvider({
       name: 'pages_added_total',

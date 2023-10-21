@@ -33,5 +33,13 @@ message Page {
   string title = 11;
   bool redirect = 12;
   uint32 priority = 13;
+}
+
+message PageHistory {
+  string id = 1;
+  google.protobuf.Timestamp created_at = 2;
+  google.protobuf.Timestamp updated_at = 3;
+  google.protobuf.Timestamp deleted_at = 4;
   google.protobuf.Timestamp scanned_at = 14;
+  string failure = 15;
 }

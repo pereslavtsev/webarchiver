@@ -19,6 +19,7 @@ const metadata: ModuleMetadata = {
     ConfigModule.forFeature(matcherConfig),
     BotModule,
     CoreModule,
+    TemplatesModule,
     LoggerModule.forRoot(),
     BullModule.registerQueueAsync({
       useClass: MatcherQueueConfigService,
@@ -31,7 +32,7 @@ const metadata: ModuleMetadata = {
 if (!isMainThread) {
   metadata.providers.push(MatcherBackgroundConsumer);
 } else {
-  metadata.imports.push(PagesModule, TemplatesModule);
+  metadata.imports.push(PagesModule);
   metadata.providers.push(MatcherMainConsumer, MatcherService);
 }
 

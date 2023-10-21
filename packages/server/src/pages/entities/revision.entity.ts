@@ -22,6 +22,8 @@ export class Revision extends BaseEntity {
   parentId: Revision['id'];
   @Column({ type: 'timestamptz', comment: 'The timestamp of the revision.' })
   timestamp: Date;
+  @Column('timestamptz', { nullable: true })
+  scannedAt: Date;
   @ManyToOne(() => Page, (page) => page.revisions, {
     onDelete: 'CASCADE',
   })

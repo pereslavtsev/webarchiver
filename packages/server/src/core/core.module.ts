@@ -29,7 +29,7 @@ const metadata: ModuleMetadata = {
     LoggerModule.forRoot({
       pinoHttp: {
         name: processName,
-        level: !isProduction ? 'debug' : 'info',
+        level: !isProduction ? 'info' : 'info',
         transport: !isProduction
           ? { target: 'pino-pretty', options: prettyOptions }
           : undefined,

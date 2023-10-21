@@ -27,7 +27,7 @@ export class CiteWebTemplate extends BaseCitationTemplate {
     if (!getArchiveUrlParam?.value.length) {
       return null;
     }
-    return new URL(getArchiveUrlParam.value);
+    return this.transformUrl(getArchiveUrlParam.value);
   }
 
   set archiveUrl(value: string) {
