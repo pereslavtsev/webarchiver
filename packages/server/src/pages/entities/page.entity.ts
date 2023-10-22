@@ -15,8 +15,9 @@ import { PageHistory } from './page-history.entity';
 @Entity('pages')
 export class Page extends BaseEntity implements webarchiver.v1.Page {
   static readonly Event = PageEvent;
+  static readonly Status = webarchiver.v1.PageStatus;
 
-  @PrimaryColumn('int4')
+  @PrimaryColumn('int4', { primaryKeyConstraintName: 'page_id_pkey' })
   id: number;
   @Column('int2')
   namespace: number;
@@ -27,6 +28,11 @@ export class Page extends BaseEntity implements webarchiver.v1.Page {
   @Column('int4')
   @Generated('increment')
   priority: number;
+  @Column('enum', {
+    enum: Page.Status,
+    default: Page.Status.PENDING,
+  })
+  status: webarchiver.v1.PageStatus;
   @OneToMany(() => PageHistory, (pageHistory) => pageHistory.page, {
     cascade: ['insert', 'update'],
   })

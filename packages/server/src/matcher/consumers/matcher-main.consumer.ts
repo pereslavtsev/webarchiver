@@ -1,4 +1,5 @@
 import {
+  OnGlobalQueueActive,
   OnGlobalQueueCompleted,
   OnGlobalQueueFailed,
   OnGlobalQueueProgress,
@@ -21,6 +22,12 @@ export class MatcherMainConsumer {
     @InjectMatcherQueue() private readonly matcherQueue: Queue<Page>,
     private readonly crawlerService: MatcherService,
   ) {}
+
+  @OnGlobalQueueActive()
+  async handleJobStarted(jobId: JobId) {
+    const { data: page } = await this.matcherQueue.getJob(jobId);
+    const { id: pageId, title } = page;
+  }
 
   @OnGlobalQueueCompleted()
   async handleJobCompleted(jobId: JobId, result: string) {

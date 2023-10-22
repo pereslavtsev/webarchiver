@@ -10,6 +10,9 @@ plugins:
       - nestJs=true
       - addNestjsRestParameter=true
       - useDate=true
+      - enumsAsLiterals=true
+      - useSnakeTypeName=false
+      - stringEnums=true
   - name: web
     out: packages/app/src/__generated__
     strategy: all
@@ -18,3 +21,6 @@ plugins:
       - outputClientImpl=grpc-web
       - useReadonlyTypes=true
       - esModuleInterop=true
+      - enumsAsLiterals=true
+      - useSnakeTypeName=false
+      - stringEnums=true

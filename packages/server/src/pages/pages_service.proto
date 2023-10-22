@@ -26,6 +26,15 @@ message GetPageRequest {
 }
 
 message Page {
+  enum Status {
+    DRAFT = 0;
+    PENDING = 1;
+    ASSIGNED = 2;
+    PROCESSING = 3;
+    DONE = 10;
+    FAILED = 11;
+  }
+
   uint32 id = 1;
   google.protobuf.Timestamp created_at = 2;
   google.protobuf.Timestamp updated_at = 3;
@@ -33,6 +42,7 @@ message Page {
   string title = 11;
   bool redirect = 12;
   uint32 priority = 13;
+  Status status = 15;
 }
 
 message PageHistory {

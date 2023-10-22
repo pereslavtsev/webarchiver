@@ -5,11 +5,15 @@ import { Page } from '../entities/page.entity';
 import { PageScannedEvent } from '../events/page-scanned.event';
 import { PageHistoryService } from '../services/page-history.service';
 import { PageFailedEvent } from '../events/page-failed.event';
+import { PagesService } from '../services/pages.service';
+import { DataSource } from 'typeorm';
+import { PageHistory } from '../entities/page-history.entity';
 
 @Injectable()
 export class PageListener {
   constructor(
     private readonly pageHistoryService: PageHistoryService,
+    private readonly dataSource: DataSource,
     @InjectPinoLogger(PageListener.name)
     private readonly logger: PinoLogger,
   ) {}
@@ -23,16 +27,32 @@ export class PageListener {
       context: PageListener.name,
       pageId,
     });
-    await this.pageHistoryService.insert({
-      scannedAt: new Date(),
-      failure,
-      pageId,
-    });
-    logger.error(
-      'Page "%s" has NOT been processed -- failure: %s',
-      title,
-      failure,
-    );
+
+    const queryRunner = this.dataSource.createQueryRunner();
+
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      await queryRunner.manager
+        .getRepository(Page)
+        .update({ id: pageId }, { status: Page.Status.FAILED });
+      await queryRunner.manager.getRepository(PageHistory).insert({
+        scannedAt: new Date(),
+        failure,
+        pageId,
+      });
+    } catch (error) {
+      logger.error(error);
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+      logger.error(
+        'Page "%s" has NOT been processed -- failure: %s',
+        title,
+        failure,
+      );
+    }
   }
 
   @OnEvent(Page.Event.SCANNED, { async: true })
