@@ -1,6 +1,4 @@
 import { Process, OnQueueFailed } from '@nestjs/bull';
-import { Job } from 'bull';
-import { Page } from '../../pages/entities/page.entity';
 import { InjectBot } from '../../bot/decorators/inject-bot.decorator';
 import { Bot } from '../../bot/classes/bot.class';
 import { ApiRevision, MwnWikitext } from 'mwn';
@@ -18,6 +16,7 @@ import { NotFoundException } from '@nestjs/common';
 import { parentPort } from 'worker_threads';
 import { CitationTemplatesService } from '../../templates/services/citation-templates.service';
 import { DeepPartial } from 'typeorm';
+import { MatcherJob } from '../matcher.types';
 
 @MatcherProcessor()
 export class MatcherBackgroundConsumer {
@@ -30,8 +29,11 @@ export class MatcherBackgroundConsumer {
   ) {}
 
   @OnQueueFailed()
-  handleJobFailed(job: Job<Page>, error: Error) {
-    const { data: page, id: jobId } = job;
+  handleJobFailed(job: MatcherJob, error: Error) {
+    const {
+      data: { page },
+      id: jobId,
+    } = job;
     const { id: pageId, title } = page;
     this.logger.error(
       { jobId, pageId },
@@ -42,9 +44,12 @@ export class MatcherBackgroundConsumer {
   }
 
   @Process()
-  protected async process(job: Job<Page>) {
-    const { id: jobId, data: page } = job;
-    const { id: pageId } = page;
+  protected async process(job: MatcherJob) {
+    const {
+      id: jobId,
+      data: { page },
+    } = job;
+    const { id: pageId, latestRevisionId } = page;
 
     const logger = this.logger.logger.child({
       context: MatcherBackgroundConsumer.name,
@@ -102,12 +107,14 @@ export class MatcherBackgroundConsumer {
 
     logger.debug('Fetching revisions for page "%s" ...', page.title);
 
+    let processedRevisionsCount = 0;
+
     for await (const json of this.bot.continuedQueryGen({
       action: 'query',
       prop: 'revisions',
       pageids: pageId,
       rvdir: 'newer',
-      // rvendid: tailRevisionId,
+      rvstartid: latestRevisionId,
       rvslots: 'main',
       rvlimit: 'max',
       rvprop: ['ids', 'content', 'comment', 'timestamp', 'size'],
@@ -119,7 +126,19 @@ export class MatcherBackgroundConsumer {
         page.title,
         revisions.length,
       );
+
       for (const revision of revisions as ApiRevision[]) {
+        if (revision.revid === latestRevisionId) {
+          logger.debug(
+            'Revision %d (%s) for page "%s" (%s) already scanned, skipped',
+            revision.revid,
+            revision.timestamp,
+            page.title,
+            prettyBytes(revision.size),
+          );
+          continue;
+        }
+
         logger.debug(
           'Processing revision %d (%s) for page "%s" (%s) ...',
           revision.revid,
@@ -132,6 +151,7 @@ export class MatcherBackgroundConsumer {
         const { revid: revisionId, parentid: parentId, timestamp } = revision;
 
         if (revision.slots.main['texthidden']) {
+          processedRevisionsCount++;
           parentPort.postMessage({
             eventName: 'revision.received',
             payload: {
@@ -164,7 +184,7 @@ export class MatcherBackgroundConsumer {
             revisionId: revisionId,
           }),
         );
-
+        processedRevisionsCount++;
         parentPort.postMessage({
           eventName: 'revision.received',
           payload: {
@@ -186,6 +206,6 @@ export class MatcherBackgroundConsumer {
       }
     }
 
-    return { sources: [] };
+    return { sources: [], processedRevisionsCount };
   }
 }

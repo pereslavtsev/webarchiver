@@ -5,8 +5,6 @@ import {
   OnApplicationBootstrap,
 } from '@nestjs/common';
 import { PagesService } from '../../pages/services/pages.service';
-import { Page } from '../../pages/entities/page.entity';
-import type { Job, Queue } from 'bull';
 import { isMainThread, Worker, SHARE_ENV } from 'worker_threads';
 import { IsNull } from 'typeorm';
 import { InjectMatcherQueue } from '../matcher.decorators';
@@ -15,6 +13,7 @@ import matcherConfig from '../config/matcher.config';
 import { formatObject } from '../../utils';
 import { TemplatesService } from '../../templates/services/templates.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { MatcherJob, MatcherQueue } from '../matcher.types';
 
 @Injectable()
 export class MatcherService implements OnApplicationBootstrap {
@@ -27,7 +26,7 @@ export class MatcherService implements OnApplicationBootstrap {
     private readonly pagesService: PagesService,
     private readonly eventEmitter: EventEmitter2,
     private readonly templatesService: TemplatesService,
-    @InjectMatcherQueue() private readonly matcherQueue: Queue<Page>,
+    @InjectMatcherQueue() private readonly matcherQueue: MatcherQueue,
   ) {}
 
   async clearAll() {
@@ -36,7 +35,7 @@ export class MatcherService implements OnApplicationBootstrap {
     }
   }
 
-  async synchroniseJobs(): Promise<Job<Page>[]> {
+  async synchroniseJobs(): Promise<MatcherJob[]> {
     const pages = await this.pagesService.find({
       take: 10,
       // where: {
@@ -45,7 +44,7 @@ export class MatcherService implements OnApplicationBootstrap {
       order: { priority: 'desc', createdAt: 'desc' },
     });
     const jobs = pages.map((page) => ({
-      data: page,
+      data: { page },
       opts: {
         jobId: page.id,
       },

@@ -5,13 +5,14 @@ import {
   OnGlobalQueueProgress,
   OnGlobalQueueDrained,
 } from '@nestjs/bull';
-import { Job, JobId, Queue } from 'bull';
+import { JobId } from 'bull';
 import { Page } from '../../pages/entities/page.entity';
 import { Source } from '../../pages/entities/source.entity';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { MatcherService } from '../service/matcher.service';
 import { InjectMatcherQueue, MatcherProcessor } from '../matcher.decorators';
 import { Logger } from '@nestjs/common';
+import { MatcherQueue } from '../matcher.types';
 
 @MatcherProcessor()
 export class MatcherMainConsumer {
@@ -19,30 +20,41 @@ export class MatcherMainConsumer {
 
   constructor(
     private readonly eventEmitter: EventEmitter2,
-    @InjectMatcherQueue() private readonly matcherQueue: Queue<Page>,
+    @InjectMatcherQueue() private readonly matcherQueue: MatcherQueue,
     private readonly crawlerService: MatcherService,
   ) {}
 
   @OnGlobalQueueActive()
   async handleJobStarted(jobId: JobId) {
-    const { data: page } = await this.matcherQueue.getJob(jobId);
+    const {
+      data: { page },
+    } = await this.matcherQueue.getJob(jobId);
     const { id: pageId, title } = page;
   }
 
   @OnGlobalQueueCompleted()
   async handleJobCompleted(jobId: JobId, result: string) {
-    const { data: page } = await this.matcherQueue.getJob(jobId);
+    const {
+      data: { page },
+    } = await this.matcherQueue.getJob(jobId);
     const { id: pageId, title } = page;
-    const { sources } = JSON.parse(result) as { sources: Partial<Source>[] };
+    const { processedRevisionsCount } = JSON.parse(result) as {
+      processedRevisionsCount: number;
+    };
     // console.log(
     //   `page "${title}" (${pageId}) has been scanned, unarchived sources: ${sources.length}`,
     // );
-    await this.eventEmitter.emitAsync(Page.Event.SCANNED, { page });
+    await this.eventEmitter.emitAsync(Page.Event.SCANNED, {
+      page,
+      processedRevisionsCount,
+    });
   }
 
   @OnGlobalQueueFailed()
   async handleJobFailed(jobId: JobId, error: Error) {
-    const { data: page } = await this.matcherQueue.getJob(jobId);
+    const {
+      data: { page },
+    } = await this.matcherQueue.getJob(jobId);
     this.logger.error({ jobId }, 'Matcher job failed: %s', error);
     await this.eventEmitter.emitAsync(Page.Event.FAILED, {
       page,
@@ -51,8 +63,8 @@ export class MatcherMainConsumer {
   }
 
   @OnGlobalQueueProgress()
-  handleJobProgress(job: Job<Page>, progress: number) {
-    console.log('progress', job, progress);
+  handleJobProgress(jobId: JobId, progress: number) {
+    console.log('progress', jobId, progress);
   }
 
   @OnGlobalQueueDrained()

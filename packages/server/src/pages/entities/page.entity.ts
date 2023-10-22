@@ -4,6 +4,7 @@ import {
   Generated,
   OneToMany,
   PrimaryColumn,
+  VirtualColumn,
   Relation,
 } from 'typeorm';
 import { BaseEntity } from '../../core/entities/base.entity';
@@ -39,4 +40,10 @@ export class Page extends BaseEntity implements webarchiver.v1.Page {
   readonly history: Relation<PageHistory>[];
   @OneToMany(() => Revision, (revision) => revision.page)
   readonly revisions: Relation<Revision>[];
+
+  @VirtualColumn({
+    query: (alias) =>
+      `SELECT id FROM "revisions" WHERE "page_id" = ${alias}.id ORDER BY "timestamp" DESC LIMIT 1`,
+  })
+  latestRevisionId: Revision['id'];
 }

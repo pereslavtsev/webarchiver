@@ -5,7 +5,6 @@ import { Page } from '../entities/page.entity';
 import { PageScannedEvent } from '../events/page-scanned.event';
 import { PageHistoryService } from '../services/page-history.service';
 import { PageFailedEvent } from '../events/page-failed.event';
-import { PagesService } from '../services/pages.service';
 import { DataSource } from 'typeorm';
 import { PageHistory } from '../entities/page-history.entity';
 
@@ -57,7 +56,7 @@ export class PageListener {
 
   @OnEvent(Page.Event.SCANNED, { async: true })
   async handlePageScannedEvent(payload: PageScannedEvent): Promise<void> {
-    const { page } = payload;
+    const { page, processedRevisionsCount } = payload;
     const { id: pageId, title } = page;
     // Make a dedicated logger instance
     const logger = this.logger.logger.child({
@@ -65,6 +64,10 @@ export class PageListener {
       pageId,
     });
     await this.pageHistoryService.insert({ scannedAt: new Date(), pageId });
-    logger.info('Page "%s" has been processed', title);
+    logger.info(
+      'Page "%s" has been processed, %d revisions scanned',
+      title,
+      processedRevisionsCount,
+    );
   }
 }
