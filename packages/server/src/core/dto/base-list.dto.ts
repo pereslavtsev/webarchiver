@@ -1,4 +1,5 @@
 import { IsInt, Max, Min } from 'class-validator';
+import { MAX_ENTITY_LIMIT, MIN_ENTITY_LIMIT } from '../../consts';
 
 export abstract class BaseListDto {
   /** Offset of the query for pagination */
@@ -7,7 +8,7 @@ export abstract class BaseListDto {
   offset: number;
   /** Limit per page of the query for pagination */
   @IsInt()
-  @Min(1)
-  @Max(100)
+  @Min(MIN_ENTITY_LIMIT)
+  @Max(MAX_ENTITY_LIMIT)
   limit: number;
 }
