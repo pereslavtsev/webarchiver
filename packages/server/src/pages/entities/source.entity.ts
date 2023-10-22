@@ -13,9 +13,11 @@ import { CiteWebTemplate } from '../../archiver/templates/cite-web.template';
 
 @Entity('sources')
 export class Source extends BaseEntity {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn('uuid', {
+    primaryKeyConstraintName: 'source_id_pkey',
+  })
   id: number;
-  @Index()
+  @Index('source_url_idx')
   @Column('varchar')
   url: string;
   @Column('timestamptz')
@@ -23,6 +25,7 @@ export class Source extends BaseEntity {
   @Column('date', { nullable: true })
   accessDate: Date;
   @Column('varchar', { nullable: true })
+  @Index('source_archive_url_idx')
   archiveUrl: string = null;
   @Column('date', { nullable: true })
   archiveDate: Date = null;

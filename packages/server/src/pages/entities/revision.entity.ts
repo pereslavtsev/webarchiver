@@ -6,8 +6,8 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryColumn,
-  Relation,
-} from 'typeorm';
+  Relation, VirtualColumn
+} from "typeorm";
 import { Page } from './page.entity';
 import { ApiRevision } from 'mwn';
 import { Source } from './source.entity';
@@ -34,6 +34,18 @@ export class Revision extends BaseEntity {
 
   @OneToMany(() => Source, (source) => source.revision, { cascade: true })
   sources: Source[];
+
+  @VirtualColumn({
+    query: (alias) =>
+      `SELECT count(id) FROM "sources" WHERE "revision_id" = ${alias}.id`,
+  })
+  totalSourcesCount: number;
+
+  @VirtualColumn({
+    query: (alias) =>
+      `SELECT count(id) FROM "sources" WHERE "revision_id" = ${alias}.id AND "archive_url" IS NULL`,
+  })
+  unarchivedSourcesCount: number;
 
   static makeFromApiResponse(apiRevision: ApiRevision): Revision {
     const revision = new Revision();

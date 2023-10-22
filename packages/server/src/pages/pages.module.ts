@@ -14,10 +14,11 @@ import { RevisionReceivedListener } from './listeners/revision-received.listener
 import { PageListener } from './listeners/page.listener';
 import { PageHistory } from './entities/page-history.entity';
 import { PageHistoryService } from './services/page-history.service';
+import { RevisionsController } from './controllers/revisions.controller';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Page, PageHistory, Revision, Source])],
-  controllers: [PagesController],
+  controllers: [PagesController, RevisionsController],
   providers: [
     PagesService,
     PageHistoryService,
