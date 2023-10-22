@@ -13,6 +13,7 @@ import { ListPagesDto } from '../dto/list-pages.dto';
 import { Observable, throwError } from 'rxjs';
 import { RpcException } from '@nestjs/microservices';
 import { status } from '@grpc/grpc-js';
+import { GetPageDto } from '../dto/get-page.dto';
 
 const { PagesServiceControllerMethods } = webarchiver.v1;
 
@@ -48,5 +49,8 @@ export class PagesController implements webarchiver.v1.PagesServiceController {
     return { data: pages };
   }
 
-  async getPage(request: any, metadata?: Metadata): Promise<any> {}
+  async getPage(@Body() getPageDto: GetPageDto): Promise<webarchiver.v1.Page> {
+    const { id } = getPageDto;
+    return this.pagesService.findOneByOrFail({ id });
+  }
 }

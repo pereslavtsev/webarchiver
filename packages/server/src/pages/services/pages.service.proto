@@ -43,13 +43,6 @@ message Page {
   bool redirect = 12;
   uint32 priority = 13;
   Status status = 15;
-}
-
-message PageHistory {
-  string id = 1;
-  google.protobuf.Timestamp created_at = 2;
-  google.protobuf.Timestamp updated_at = 3;
-  google.protobuf.Timestamp deleted_at = 4;
-  google.protobuf.Timestamp scanned_at = 14;
-  string failure = 15;
+  uint32 latest_revision_id = 16;
+  uint32 total_revisions_count = 17;
 }

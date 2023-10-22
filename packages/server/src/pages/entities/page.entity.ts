@@ -46,4 +46,10 @@ export class Page extends BaseEntity implements webarchiver.v1.Page {
       `SELECT id FROM "revisions" WHERE "page_id" = ${alias}.id ORDER BY "timestamp" DESC LIMIT 1`,
   })
   latestRevisionId: Revision['id'];
+
+  @VirtualColumn({
+    query: (alias) =>
+      `SELECT count(id) FROM "revisions" WHERE "page_id" = ${alias}.id`,
+  })
+  totalRevisionsCount: number;
 }
