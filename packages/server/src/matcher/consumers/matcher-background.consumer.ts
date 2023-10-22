@@ -129,11 +129,29 @@ export class MatcherBackgroundConsumer {
         );
         const start = process.hrtime();
         // START
+        const { revid: revisionId, parentid: parentId, timestamp } = revision;
+
+        if (revision.slots.main['texthidden']) {
+          parentPort.postMessage({
+            eventName: 'revision.received',
+            payload: {
+              page,
+              revision: {
+                id: revisionId,
+                parentId,
+                timestamp,
+                pageId,
+                textHidden: true,
+              },
+              sources: [],
+            },
+          });
+          continue;
+        }
+
         const citationTemplates = this.citationTemplatesService.extract(
           revision.slots.main.content,
         );
-        // console.log('templates', templates.length);
-        const { revid: revisionId, parentid: parentId, timestamp } = revision;
 
         const sources = citationTemplates.map<DeepPartial<Source>>(
           (citationTemplate) => ({
@@ -141,7 +159,7 @@ export class MatcherBackgroundConsumer {
             archiveUrl: citationTemplate.archiveUrl?.toString(),
             preferredAt: citationTemplate.accessDate ?? timestamp,
             wikitextBefore: citationTemplate.wikitext,
-            url: citationTemplate.url,
+            url: citationTemplate.url?.toString(),
             accessDate: citationTemplate.accessDate,
             revisionId: revisionId,
           }),

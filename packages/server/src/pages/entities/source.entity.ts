@@ -17,7 +17,7 @@ export class Source extends BaseEntity {
   id: number;
   @Index()
   @Column('varchar')
-  url: URL;
+  url: string;
   @Column('timestamptz')
   preferredAt: Date;
   @Column('date', { nullable: true })

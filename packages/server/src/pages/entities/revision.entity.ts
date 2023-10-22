@@ -20,6 +20,8 @@ export class Revision extends BaseEntity {
   pageId: Page['id'];
   @Column('int4')
   parentId: Revision['id'];
+  @Column('boolean', { default: false })
+  textHidden: boolean;
   @Column({ type: 'timestamptz', comment: 'The timestamp of the revision.' })
   timestamp: Date;
   @Column('timestamptz', { nullable: true })
