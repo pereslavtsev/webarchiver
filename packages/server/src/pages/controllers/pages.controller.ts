@@ -7,7 +7,6 @@ import {
   RpcExceptionFilter,
   UseFilters,
 } from '@nestjs/common';
-import type { Metadata } from '@grpc/grpc-js';
 import { PagesService } from '../services/pages.service';
 import { ListPagesDto } from '../dto/list-pages.dto';
 import { Observable, throwError } from 'rxjs';
@@ -18,7 +17,7 @@ import { GetPageDto } from '../dto/get-page.dto';
 const { PagesServiceControllerMethods } = webarchiver.v1;
 
 @Catch(BadRequestException)
-export class Filter implements RpcExceptionFilter<BadRequestException> {
+class Filter implements RpcExceptionFilter<BadRequestException> {
   catch(exception: BadRequestException): Observable<any> {
     const response = exception.getResponse();
     const message =

@@ -17,14 +17,14 @@ export class RevisionsController
     @Body() listRevisionsDto: ListRevisionsDto,
   ): Promise<webarchiver.v1.ListRevisionsResponse> {
     const { limit, offset, pageId } = listRevisionsDto;
-    const pages = await this.revisionsService.find({
+    const revisions = await this.revisionsService.find({
       take: limit,
       skip: offset,
       where: {
         pageId,
       },
     });
-    return { data: pages };
+    return { data: revisions };
   }
 
   async getRevision(

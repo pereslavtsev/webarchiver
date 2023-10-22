@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+package webarchiver.v1;
+
+service SourcesService {
+  rpc ListRevisionSources(ListRevisionSourcesRequest) returns (ListRevisionSourcesResponse) {}
+  rpc GetSource(GetSourceRequest) returns (Source) {}
+}
+
+message ListRevisionSourcesRequest {
+  // Offset of the query for pagination
+  uint32 offset = 1;
+
+  // Limit per page of the query for pagination
+  uint32 limit = 2;
+
+  // Revision ID
+  uint32 revision_id = 3;
+}
+
+message ListRevisionSourcesResponse {
+  repeated Source data = 1;
+}
+
+message GetSourceRequest {
+  uint32 id = 1;
+}
+
+message Source {
+  uint32 id = 1;
+  google.protobuf.Timestamp created_at = 2;
+  google.protobuf.Timestamp updated_at = 3;
+  google.protobuf.Timestamp deleted_at = 4;
+  string url = 11;
+  google.protobuf.Timestamp preferred_at = 12;
+  google.protobuf.Timestamp access_date = 13;
+  string archive_url = 14;
+  google.protobuf.Timestamp archive_date = 15;
+  string wikitext_before = 16;
+}

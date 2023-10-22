@@ -10,9 +10,10 @@ import {
 import { BaseEntity } from '../../core/entities/base.entity';
 import { Revision } from './revision.entity';
 import { CiteWebTemplate } from '../../archiver/templates/cite-web.template';
+import { webarchiver } from '../../__generated__';
 
 @Entity('sources')
-export class Source extends BaseEntity {
+export class Source extends BaseEntity implements webarchiver.v1.Source {
   @PrimaryGeneratedColumn('uuid', {
     primaryKeyConstraintName: 'source_id_pkey',
   })
