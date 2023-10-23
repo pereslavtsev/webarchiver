@@ -4,8 +4,9 @@ import type { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { formatObject } from '../../utils';
 import terminalLink from 'terminal-link';
 import { plainToInstance } from 'class-transformer';
-import { cfxToObj } from '../cdx.utils';
+import { cfxToObj } from '../utils/cdx.utils';
 import { SearchResult } from '../classes/search-result.class';
+import { CdxQueryBuilder } from '../classes/cdx-query-builder.class';
 
 @Injectable()
 export class WaybackCdxClientService implements OnApplicationBootstrap {
@@ -37,7 +38,7 @@ export class WaybackCdxClientService implements OnApplicationBootstrap {
       case 'get': {
         this.logger.debug(
           `Wayback CDX API Request: %s %s`,
-          params ? formatObject(params) : {},
+          params ? formatObject(params) : '{}',
           terminalLink('link', fullUrl.toString()),
         );
       }
@@ -46,18 +47,28 @@ export class WaybackCdxClientService implements OnApplicationBootstrap {
     return config;
   }
 
-  async search() {
-    const { data } = await this.httpService.axiosRef.get('search/cdx', {
-      params: {
-        url: 'rutracker.org',
-        output: 'json',
-      },
-    });
-    return plainToInstance(SearchResult, data);
+  createQueryBuilder() {
+    return new CdxQueryBuilder(this.httpService.axiosRef);
+  }
+
+  async search(url: string, options: any) {
+    const { fieldOrder } = options;
+
+    const params = { url, output: 'json' };
+
+    if (fieldOrder) {
+      params['fl'] = fieldOrder;
+    }
+
+    const queryBuilder = this.createQueryBuilder().search(url);
+
+    queryBuilder.where('statuscode', '200');
+
+    return queryBuilder.getResults();
   }
 
   async onApplicationBootstrap(): Promise<any> {
-    const response = await this.search();
-    console.log('response', response);
+    const response = await this.search('rutracker.org', {});
+    console.log('response', response[0]);
   }
 }

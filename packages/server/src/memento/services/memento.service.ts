@@ -27,7 +27,7 @@ export class MementoService implements OnApplicationBootstrap {
       case 'get': {
         this.logger.debug(
           `Memento API Request: %s %s`,
-          params ? formatObject(params) : {},
+          params ? formatObject(params) : '{}',
           terminalLink('link', fullUrl.toString()),
         );
       }

@@ -32,7 +32,7 @@ export class WaybackMachineService implements OnApplicationBootstrap {
       case 'get': {
         this.logger.debug(
           `Wayback Machine API Request: %s %s`,
-          params ? formatObject(params) : {},
+          params ? formatObject(params) : '{}',
           terminalLink('link', fullUrl.toString()),
         );
       }
