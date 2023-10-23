@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { MementoService } from './services/memento.service';
 import { HttpModule } from '@nestjs/axios';
-import { MementoConfigService } from './services/memento-config.service';
+import { MementoHttpConfigService } from './services/memento-http-config.service';
 
 @Module({
   imports: [
     HttpModule.registerAsync({
-      useClass: MementoConfigService,
+      useClass: MementoHttpConfigService,
     }),
   ],
   providers: [MementoService],

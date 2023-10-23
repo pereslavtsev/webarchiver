@@ -17,11 +17,18 @@ import { PagesModule } from './pages/pages.module';
 import { TerminalModule } from './terminal/terminal.module';
 import { InjectTerminal } from './terminal/decorators/inject-bot.decorator';
 import { MatcherModule } from './matcher/matcher.module';
+import { WaybackMachineModule } from './wayback-machine/wayback-machine.module';
+import { WaybackCdxClientModule } from './wayback-cdx-client/wayback-cdx-client.module';
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 @Module({
-  imports: [CoreModule, TerminalModule],
+  imports: [
+    CoreModule,
+    TerminalModule,
+    WaybackMachineModule,
+    WaybackCdxClientModule,
+  ],
   controllers: [UiController],
   providers: [AppCommand],
 })
