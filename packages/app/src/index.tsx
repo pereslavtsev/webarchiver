@@ -12,8 +12,11 @@ import PageList from "./routes/PageList";
 import WatcherList from "./routes/WatcherList";
 import WatcherDetails from "./routes/WatcherDetails";
 import SourceListPage from "./routes/SourceListPage";
+import { GrpcWebImpl, PagesServiceClientImpl } from "./__generated__/pages/pages_service";
 
 FocusStyleManager.onlyShowFocusOnTabs();
+
+
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

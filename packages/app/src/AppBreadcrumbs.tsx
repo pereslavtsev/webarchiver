@@ -6,7 +6,7 @@ type AppBreadcrumbsProps = Pick<BreadcrumbsProps, 'className'>;
 
 const AppBreadcrumbs: FC<AppBreadcrumbsProps> = () => {
   const matches = useMatches();
-  console.log(matches)
+  // console.log(matches)
 
   const items = useMemo< BreadcrumbProps[]>(() => {
     return matches.map(uiMatch => ({
