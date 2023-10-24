@@ -13,6 +13,7 @@ import { Observable, throwError } from 'rxjs';
 import { RpcException } from '@nestjs/microservices';
 import { status } from '@grpc/grpc-js';
 import { GetPageDto } from '../dto/get-page.dto';
+import { AddPageDto } from '../dto/add-page.dto';
 
 const { PagesServiceControllerMethods } = webarchiver.v1;
 
@@ -39,6 +40,11 @@ class Filter implements RpcExceptionFilter<BadRequestException> {
 @PagesServiceControllerMethods()
 export class PagesController implements webarchiver.v1.PagesServiceController {
   constructor(private readonly pagesService: PagesService) {}
+
+  async addPage(@Body() addPageDto: AddPageDto): Promise<webarchiver.v1.Page> {
+    const { id } = addPageDto;
+    return this.pagesService.add(id);
+  }
 
   async listPages(
     @Body() listPagesDto: ListPagesDto,

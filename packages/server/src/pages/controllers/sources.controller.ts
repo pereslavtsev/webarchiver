@@ -6,6 +6,7 @@ import { GetSourceDto } from '../dto/get-source.dto';
 import { RevisionsService } from '../services/revisions.service';
 import { RpcException } from '@nestjs/microservices';
 import { status } from '@grpc/grpc-js';
+import { ListArchivedSourcesDto } from '../dto/list-archived-sources.dto';
 
 const { SourcesServiceControllerMethods } = webarchiver.v1;
 
@@ -50,5 +51,13 @@ export class SourcesController
   ): Promise<webarchiver.v1.Source> {
     const { id } = getSourceDto;
     return this.sourcesService.findOneByOrFail({ id });
+  }
+
+  async listArchivedSources(
+    @Body() listArchivedSourcesDto: ListArchivedSourcesDto,
+  ): Promise<webarchiver.v1.ListArchivedSourcesResponse> {
+    const { id } = listArchivedSourcesDto;
+    const data = await this.sourcesService.findArchivedById(id);
+    return { data };
   }
 }

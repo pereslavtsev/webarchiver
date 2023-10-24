@@ -5,8 +5,13 @@ import "google/protobuf/timestamp.proto";
 package webarchiver.v1;
 
 service PagesService {
+  rpc AddPage(AddPageRequest) returns (Page) {}
   rpc ListPages(ListPagesRequest) returns (ListPagesResponse) {}
   rpc GetPage(GetPageRequest) returns (Page) {}
+}
+
+message AddPageRequest {
+  uint32 id = 1;
 }
 
 message ListPagesRequest {

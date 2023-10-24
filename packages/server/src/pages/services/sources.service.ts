@@ -1,6 +1,6 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { IsNull, Not, Repository } from 'typeorm';
 import { Source } from '../entities/source.entity';
 
 @Injectable()
@@ -12,23 +12,8 @@ export class SourcesService extends Repository<Source> {
     super(repository.target, repository.manager, repository.queryRunner);
   }
 
-  // async findByPage(title: string) {
-  //   const page = await this.bot.read(title);
-  //   const wkt = new this.bot.wikitext(page.revisions[0].content);
-  //   const templates = wkt
-  //     .parseTemplates({
-  //       namePredicate: (name) =>
-  //         ['cite web'].includes(String(name).toLowerCase()),
-  //     })
-  //     .map((template) => {
-  //       switch (String(template.name).toLowerCase()) {
-  //         case 'cite web': {
-  //           return new CiteWebTemplate(template);
-  //         }
-  //         default: {
-  //           return new ActiveTemplate(template);
-  //         }
-  //       }
-  //     });
-  // }
+  async findArchivedById(sourceId: Source['id']): Promise<Source[]> {
+    const source = await this.findOneOrFail({ where: { id: sourceId } });
+    return this.find({ where: { url: source.url, archiveUrl: Not(IsNull()) } });
+  }
 }

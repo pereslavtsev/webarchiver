@@ -7,6 +7,7 @@ package webarchiver.v1;
 service SourcesService {
   rpc ListRevisionSources(ListRevisionSourcesRequest) returns (ListRevisionSourcesResponse) {}
   rpc GetSource(GetSourceRequest) returns (Source) {}
+  rpc ListArchivedSources(ListArchivedSourcesRequest) returns (ListArchivedSourcesResponse) {}
 }
 
 message ListRevisionSourcesRequest {
@@ -24,12 +25,20 @@ message ListRevisionSourcesResponse {
   repeated Source data = 1;
 }
 
+message ListArchivedSourcesResponse {
+  repeated Source data = 1;
+}
+
 message GetSourceRequest {
-  uint32 id = 1;
+  string id = 1;
+}
+
+message ListArchivedSourcesRequest {
+  string id = 1;
 }
 
 message Source {
-  uint32 id = 1;
+  string id = 1;
   google.protobuf.Timestamp created_at = 2;
   google.protobuf.Timestamp updated_at = 3;
   google.protobuf.Timestamp deleted_at = 4;

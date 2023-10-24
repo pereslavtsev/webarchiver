@@ -14,9 +14,13 @@ import { PageListener } from './listeners/page.listener';
 import { PageHistory } from './entities/page-history.entity';
 import { PageHistoryService } from './services/page-history.service';
 import * as controllers from './controllers';
+import { BotModule } from '../bot/bot.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Page, PageHistory, Revision, Source])],
+  imports: [
+    TypeOrmModule.forFeature([Page, PageHistory, Revision, Source]),
+    BotModule,
+  ],
   controllers: Object.values(controllers),
   providers: [
     PagesService,
