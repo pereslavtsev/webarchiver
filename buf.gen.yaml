@@ -1,0 +1,26 @@
+version: v1
+plugins:
+  - name: server
+    out: packages/server/src/__generated__
+    strategy: all
+    path: ./node_modules/ts-proto/protoc-gen-ts_proto
+    opt:
+      - addGrpcMetadata=true
+      - outputIndex=true
+      - nestJs=true
+      - addNestjsRestParameter=true
+      - useDate=true
+      - enumsAsLiterals=true
+      - useSnakeTypeName=false
+      - stringEnums=true
+  - name: web
+    out: packages/app/src/__generated__
+    strategy: all
+    path: ./node_modules/ts-proto/protoc-gen-ts_proto
+    opt:
+      - outputClientImpl=grpc-web
+      - useReadonlyTypes=true
+      - esModuleInterop=true
+      - enumsAsLiterals=true
+      - useSnakeTypeName=false
+      - stringEnums=true

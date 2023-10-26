@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+//import "../../pages.service.proto";
+
+package webarchiver.v1;
+
+service ArchiverService {
+//  rpc AddPage(Page) returns (Page) {}
+}

@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+package webarchiver.v1;
+
+message Page {
+  enum Status {
+    DRAFT = 0;
+    PENDING = 1;
+    ASSIGNED = 2;
+    PROCESSING = 3;
+    DONE = 10;
+    FAILED = 11;
+  }
+
+  uint32 id = 1;
+  google.protobuf.Timestamp created_at = 2;
+  google.protobuf.Timestamp updated_at = 3;
+  google.protobuf.Timestamp deleted_at = 4;
+  string title = 11;
+  bool redirect = 12;
+  uint32 priority = 13;
+  Status status = 15;
+  uint32 latest_revision_id = 16;
+  uint32 total_revisions_count = 17;
+}

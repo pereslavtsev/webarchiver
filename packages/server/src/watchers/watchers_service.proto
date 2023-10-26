@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+package webarchiver.v1;
+
+service WatchersService {
+  rpc ListWatchers(ListWatchersRequest) returns (ListWatchersResponse) {}
+  rpc GetWatcher(GetWatcherRequest) returns (Watcher) {}
+}
+
+message ListWatchersRequest {
+  // Offset of the query for pagination
+  uint32 offset = 1;
+
+  // Limit per page of the query for pagination
+  uint32 limit = 2;
+}
+
+message ListWatchersResponse {
+  repeated Watcher data = 1;
+}
+
+message GetWatcherRequest {
+  uint32 id = 1;
+}
+
+message Watcher {
+  uint32 id = 1;
+  google.protobuf.Timestamp created_at = 2;
+  google.protobuf.Timestamp updated_at = 3;
+  google.protobuf.Timestamp deleted_at = 4;
+}

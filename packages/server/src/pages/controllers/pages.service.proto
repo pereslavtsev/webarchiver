@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+import "pages/entities/page.proto";
+
+package webarchiver.v1;
+
+service PagesService {
+  rpc AddPage(AddPageRequest) returns (Page) {}
+  rpc ListPages(ListPagesRequest) returns (ListPagesResponse) {}
+  rpc GetPage(GetPageRequest) returns (Page) {}
+}
+
+message AddPageRequest {
+  uint32 id = 1;
+}
+
+message ListPagesRequest {
+  // Offset of the query for pagination
+  uint32 offset = 1;
+
+// Limit per page of the query for pagination
+  uint32 limit = 2;
+}
+
+message ListPagesResponse {
+  repeated Page data = 1;
+}
+
+message GetPageRequest {
+  uint32 id = 1;
+}
+
+

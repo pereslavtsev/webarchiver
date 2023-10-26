@@ -1,0 +1,23 @@
+@import "~normalize.css/normalize.css";
+@import "~@blueprintjs/icons/lib/css/blueprint-icons.css";
+@import "~@blueprintjs/core/lib/css/blueprint.css";
+@import "~@blueprintjs/core/lib/scss/variables";
+
+body {
+  background: $pt-dark-app-background-color;
+}
+
+.metadata-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  > div {
+    display: flex;
+    //justify-content: space-between;
+
+    :first-child {
+      width: 150px;
+    }
+  }
+}

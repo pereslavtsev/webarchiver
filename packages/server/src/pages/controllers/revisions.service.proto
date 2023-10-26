@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+import "pages/entities/revision.proto";
+
+package webarchiver.v1;
+
+service RevisionsService {
+  rpc ListRevisions(ListRevisionsRequest) returns (ListRevisionsResponse) {}
+  rpc GetRevision(GetRevisionRequest) returns (Revision) {}
+}
+
+message ListRevisionsRequest {
+  // Offset of the query for pagination
+  uint32 offset = 1;
+
+  // Limit per page of the query for pagination
+  uint32 limit = 2;
+
+  // Page ID
+  uint32 page_id = 3;
+}
+
+message ListRevisionsResponse {
+  repeated Revision data = 1;
+}
+
+message GetRevisionRequest {
+  uint32 id = 1;
+}
