@@ -19,18 +19,14 @@ import { InjectTerminal } from './terminal/decorators/inject-bot.decorator';
 import { MatcherModule } from './matcher/matcher.module';
 import { WaybackMachineModule } from './wayback-machine/wayback-machine.module';
 import { WaybackCdxClientModule } from './wayback-cdx-client/wayback-cdx-client.module';
+import { PageCommand } from './archiver/commands/page.command';
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 @Module({
-  imports: [
-    CoreModule,
-    TerminalModule,
-    WaybackMachineModule,
-    WaybackCdxClientModule,
-  ],
+  imports: [CoreModule, TerminalModule],
   controllers: [UiController],
-  providers: [AppCommand],
+  providers: [AppCommand, PageCommand],
 })
 export class AppModule implements OnApplicationBootstrap {
   private readonly logger = new Logger();
@@ -45,14 +41,14 @@ export class AppModule implements OnApplicationBootstrap {
   async onModuleInit(): Promise<any> {
     // this.logger.verbose('boot');
 
-    setTimeout(async () => {
+    // setTimeout(async () => {
       // while (true) {
       //   this.ipcService.emit('message', 'hello222');
       //   // await sleep(1);
       // }
-      this.ipcService
-        .send('message', 'hello222')
-        .subscribe((response) => console.log('urere', response));
-    }, 500);
+    //   this.ipcService
+    //     .send('message', 'hello222')
+    //     .subscribe((response) => console.log('urere', response));
+    // }, 500);
   }
 }

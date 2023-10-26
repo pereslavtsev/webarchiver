@@ -49,7 +49,7 @@ export class MementoService implements OnApplicationBootstrap {
   }
 
   async onApplicationBootstrap(): Promise<any> {
-    const response = await this.getMementos('https://cnn.com', '2013');
+    // const response = await this.getMementos('https://cnn.com', '2013');
     // console.log('response', response);
   }
 }

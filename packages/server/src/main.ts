@@ -22,10 +22,12 @@ import {
   HttpException,
   ValidationPipe,
 } from '@nestjs/common';
+import { CommandFactory } from "nest-commander";
 
 async function bootstrap() {
   if (isMainProcess) {
     if (isMainThread) {
+      console.log('main');
       const childProcess = fork(__filename); // Создаем форкнутый процесс за пределами блока if
       process.once('exit', () => childProcess.kill());
       const app = await NestFactory.create(ArchiverModule, {
@@ -86,10 +88,10 @@ async function bootstrap() {
       }
     }
   } else {
-    const app = await NestFactory.create(AppModule, { bufferLogs: true });
-    app.useLogger(app.get(Logger));
-    await app.listen(5001);
-    // await CommandFactory.run(AppModule, ['warn', 'error']);
+    // const app = await NestFactory.create(AppModule, { bufferLogs: true });
+    // app.useLogger(app.get(Logger));
+    // await app.listen(5001);
+    await CommandFactory.run(AppModule, ['warn', 'error']);
   }
 }
 

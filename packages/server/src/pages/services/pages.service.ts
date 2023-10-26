@@ -10,6 +10,7 @@ import { InjectMetric } from '@willsoto/nestjs-prometheus';
 import { Counter } from 'prom-client';
 import { InjectBot } from '../../bot/decorators/inject-bot.decorator';
 import { Bot } from '../../bot/classes/bot.class';
+import type { ApiPage } from 'mwn';
 
 @Injectable()
 export class PagesService
@@ -27,24 +28,55 @@ export class PagesService
     super(repository.target, repository.manager, repository.queryRunner);
   }
 
-  async add(pageId: Page['id']) {
-    const isPageAdded = await this.exist({ where: { id: pageId } });
-    if (isPageAdded) {
-      throw new ConflictException();
-    }
-    const apiResponse = await this.bot.query({
-      pageids: pageId,
-      redirects: true,
-    });
-    const apiPage = apiResponse.query?.['pages']?.[0];
-    return this.save({
+  private transformApiPage(apiPage: ApiPage): Page {
+    return this.create({
       id: apiPage.pageid,
       namespace: apiPage.ns,
       title: apiPage['title'],
       redirect: false,
       priority: 0,
+    });
+  }
+
+  async fetchById(pageId: Page['id']): Promise<Page> {
+    const apiResponse = await this.bot.query({
+      pageids: pageId,
+      redirects: true,
+    });
+    const [page] = apiResponse.query?.['pages']?.map(
+      this.transformApiPage.bind(this),
+    );
+    return page;
+  }
+
+  async fetchByTitle(pageTitle: Page['title']): Promise<Page> {
+    const apiResponse = await this.bot.query({
+      titles: pageTitle,
+      redirects: true,
+    });
+    const [page] = apiResponse.query?.['pages']?.map(
+      this.transformApiPage.bind(this),
+    );
+    return page;
+  }
+
+  async addById(pageId: Page['id']) {
+    const page = await this.fetchById(pageId);
+
+    const isPageAdded = await this.exist({ where: { id: page.id } });
+    if (isPageAdded) {
+      throw new ConflictException();
+    }
+
+    return this.save({
+      ...page,
       status: Page.Status.PENDING,
     });
+  }
+
+  async addByTitle(pageTitle: Page['title']): Promise<Page> {
+    const page = await this.fetchByTitle(pageTitle);
+    return this.addById(page.id);
   }
 
   onApplicationBootstrap(): void {

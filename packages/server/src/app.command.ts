@@ -87,10 +87,10 @@ export class AppCommand extends CommandRunner {
     // options?: BasicCommandOptions,
   ): Promise<void> {
     console.log('run');
-    this.terminal.clear();
-    const watchers: Watcher[] = await firstValueFrom(
-      this.ipcService.send('get_watchers', { foo: 'bar' }),
-    );
+    // this.terminal.clear();
+    // const watchers: Watcher[] = await firstValueFrom(
+    //   this.ipcService.send('get_watchers', { foo: 'bar' }),
+    // );
 
     // terminal.singleLineMenu(items, options, (error, response) => {
     //   // console.log(response)
@@ -103,33 +103,33 @@ export class AppCommand extends CommandRunner {
     //   );
     //   process.exit();
     // });
-    this.terminal.windowTitle('WebArchiver');
-    this.terminal.table(
-      [
-        ['ID    ', 'Name', 'Started At', 'Interrupted At', 'Status'].map(
-          (header) => header.toUpperCase(),
-        ),
-        ...watchers.map((watcher) => [
-          `^y${watcher.id}^`,
-          watcher.name,
-          `^y${watcher.startedAt}^`,
-          `^y${watcher.interruptedAt}^`,
-          '^g√^ Active',
-        ]),
-      ],
-      {
-        hasBorder: false,
-        contentHasMarkup: true,
-        textAttr: { bgColor: 'default' },
-        borderChars: 'empty',
-        // firstCellTextAttr: { bgColor: 'blue' },
-        // firstRowTextAttr: { bgColor: 'yellow' },
-        // firstColumnTextAttr: { bgColor: 'red' },
-        // checkerEvenCellTextAttr: { bgColor: 'gray' },
-        // width: 60,
-        fit: true, // Activate all expand/shrink + wordWrap
-      },
-    );
+    // this.terminal.windowTitle('WebArchiver');
+    // this.terminal.table(
+    //   [
+    //     ['ID    ', 'Name', 'Started At', 'Interrupted At', 'Status'].map(
+    //       (header) => header.toUpperCase(),
+    //     ),
+    //     ...watchers.map((watcher) => [
+    //       `^y${watcher.id}^`,
+    //       watcher.name,
+    //       `^y${watcher.startedAt}^`,
+    //       `^y${watcher.interruptedAt}^`,
+    //       '^g√^ Active',
+    //     ]),
+    //   ],
+    //   {
+    //     hasBorder: false,
+    //     contentHasMarkup: true,
+    //     textAttr: { bgColor: 'default' },
+    //     borderChars: 'empty',
+    //     // firstCellTextAttr: { bgColor: 'blue' },
+    //     // firstRowTextAttr: { bgColor: 'yellow' },
+    //     // firstColumnTextAttr: { bgColor: 'red' },
+    //     // checkerEvenCellTextAttr: { bgColor: 'gray' },
+    //     // width: 60,
+    //     fit: true, // Activate all expand/shrink + wordWrap
+    //   },
+    // );
     // terminal.table(
     //   [
     //     ['Name', 'ID'],

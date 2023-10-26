@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-import "google/protobuf/timestamp.proto";
+import "pages/entities/source.proto";
 
 package webarchiver.v1;
 
@@ -37,15 +37,4 @@ message ListArchivedSourcesRequest {
   string id = 1;
 }
 
-message Source {
-  string id = 1;
-  google.protobuf.Timestamp created_at = 2;
-  google.protobuf.Timestamp updated_at = 3;
-  google.protobuf.Timestamp deleted_at = 4;
-  string url = 11;
-  google.protobuf.Timestamp preferred_at = 12;
-  google.protobuf.Timestamp access_date = 13;
-  string archive_url = 14;
-  google.protobuf.Timestamp archive_date = 15;
-  string wikitext_before = 16;
-}
+

@@ -8,13 +8,15 @@ import {
 import { AppController } from '../app.controller';
 import { IpcService, NestIpcServer, OnIpcInit } from 'nest-ipc';
 import { CoreModule } from '../core/core.module';
-import { ArchiverService } from './archiver.service';
+import { ArchiverService } from './services/archiver.service';
 import { MementoModule } from '../memento/memento.module';
 import { WatchersModule } from '../watchers/watchers.module';
 import { PagesModule } from '../pages/pages.module';
 import { MatcherModule } from '../matcher/matcher.module';
 import { LoggerMiddleware } from '../core/middlewares/logger.middleware';
 import { TemplatesModule } from '../templates/templates.module';
+import { WaybackMachineModule } from '../wayback-machine/wayback-machine.module';
+import { WaybackCdxClientModule } from '../wayback-cdx-client/wayback-cdx-client.module';
 
 @Module({
   imports: [
@@ -24,6 +26,8 @@ import { TemplatesModule } from '../templates/templates.module';
     PagesModule,
     MatcherModule,
     TemplatesModule,
+    WaybackMachineModule,
+    WaybackCdxClientModule,
   ],
   controllers: [AppController],
   providers: [ArchiverService],

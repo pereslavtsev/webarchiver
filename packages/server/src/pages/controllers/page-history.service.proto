@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-import "google/protobuf/timestamp.proto";
+import "pages/entities/page-history.proto";
 
 package webarchiver.v1;
 
@@ -23,11 +23,4 @@ message ListPageHistoryResponse {
   repeated PageHistory data = 1;
 }
 
-message PageHistory {
-  string id = 1;
-  google.protobuf.Timestamp created_at = 2;
-  google.protobuf.Timestamp updated_at = 3;
-  google.protobuf.Timestamp deleted_at = 4;
-  google.protobuf.Timestamp scanned_at = 14;
-  string failure = 15;
-}
+

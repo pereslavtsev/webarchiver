@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-import "google/protobuf/timestamp.proto";
+import "pages/entities/revision.proto";
 
 package webarchiver.v1;
 
@@ -26,17 +26,4 @@ message ListRevisionsResponse {
 
 message GetRevisionRequest {
   uint32 id = 1;
-}
-
-message Revision {
-  uint32 id = 1;
-  google.protobuf.Timestamp created_at = 2;
-  google.protobuf.Timestamp updated_at = 3;
-  google.protobuf.Timestamp deleted_at = 4;
-//  string title = 11; // TODO: !
-  google.protobuf.Timestamp timestamp = 12;
-  google.protobuf.Timestamp scanned_at = 13;
-  bool text_hidden = 14;
-  uint32 total_sources_count = 20;
-  uint32 unarchived_sources_count = 21;
 }

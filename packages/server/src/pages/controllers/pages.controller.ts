@@ -10,10 +10,11 @@ import {
 import { PagesService } from '../services/pages.service';
 import { ListPagesDto } from '../dto/list-pages.dto';
 import { Observable, throwError } from 'rxjs';
-import { RpcException } from '@nestjs/microservices';
+import { Payload, RpcException } from '@nestjs/microservices';
 import { status } from '@grpc/grpc-js';
 import { GetPageDto } from '../dto/get-page.dto';
 import { AddPageDto } from '../dto/add-page.dto';
+import { NestIpcServer, OnIpcInit, SubscribeIpcMessage } from 'nest-ipc';
 
 const { PagesServiceControllerMethods } = webarchiver.v1;
 
@@ -35,15 +36,30 @@ class Filter implements RpcExceptionFilter<BadRequestException> {
   }
 }
 
+// @Catch()
+// class R implements RpcExceptionFilter {
+//   catch(exception: RpcException): any {
+//     console.log(121212, exception.getError());
+//     return throwError(() => exception.getError());
+//   }
+// }
+
 @UseFilters(Filter)
 @Controller()
 @PagesServiceControllerMethods()
 export class PagesController implements webarchiver.v1.PagesServiceController {
   constructor(private readonly pagesService: PagesService) {}
 
+  @SubscribeIpcMessage('add_page')
+  // @UseFilters(R)
+  handleAddPageMessage(@Payload() addPageDto: any) {
+    const { id } = addPageDto;
+    return this.pagesService.addById(id);
+  }
+
   async addPage(@Body() addPageDto: AddPageDto): Promise<webarchiver.v1.Page> {
     const { id } = addPageDto;
-    return this.pagesService.add(id);
+    return this.pagesService.addById(id);
   }
 
   async listPages(
